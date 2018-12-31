@@ -1,0 +1,34 @@
+extends layout
+
+block append head
+	script(src='/js/hackathon.js')
+
+block content
+	.about
+		span#name
+		span#university
+		span#location
+		span#date
+	<div id = "app">
+		<div class="row" v-for="(hackerPref, index) in preferences">  <!--hacker.preference-->
+			<div class = "col-md-4">
+				
+			</div>
+			<div class = "col-md-2">
+				<h6>Commonnalities: </h6>
+			</div>
+			<div class="col-md-6">
+				<div v-for="(preference, idx) in hackerPref">  <!--hacker.preferences.interests-->
+					<span v-for="(pre, i) in preference">  <!--hacker.preferences.interests[i]-->
+						<span>{{pre}},</span>
+					</span>
+				</div>
+			</div>
+			<br />
+		</div>
+	</div>
+	
+	script.
+		var Hackathon = !{JSON.stringify(Hackathon)};
+		var result = !{JSON.stringify(result)};
+		var currentHacker = !{JSON.stringify(currentHacker)};

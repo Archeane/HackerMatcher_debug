@@ -1,0 +1,13 @@
+[
+	{ "id": 1, "name": "Artifical Intelligence" },
+	{ "id": 2, "name": "Computer Vision" },
+	{ "id": 3, "name": "Machine Learning" },
+	{ "id": 4, "name": "Medical Imaging" },
+	{ "id": 5, "name": "Theory" },
+	{ "id": 6, "name": "Hardware" },
+	{ "id": 7, "name": "Network" },
+	{ "id": 8, "name": "Graphics" },
+	{ "id": 9, "name": "Human-Computer Interaction"},
+	{ "id": 10, "name": "Gaming"},
+	{ "id": 11, "name": "Data Visulization"}
+]

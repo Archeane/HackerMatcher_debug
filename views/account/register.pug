@@ -1,0 +1,157 @@
+extends ../layout
+
+block append head
+  //link(href="/css/register.css", rel="stylesheet", type="text/css")
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+  script(src="/js/register.js")
+
+block content 
+  form(action='/register?_csrf='+_csrf, method='POST', enctype='multipart/form-data', id="msform")
+  
+    <fieldset id="fieldset1">
+      //Gender
+      .form-group.row
+        label.col-md-3.col-form-label.font-weight-bold.text-right Gender
+        .col-sm-6
+          .pretty.p-default.p-curve
+            input(type='radio', name='gender', value='male')
+            .state.p-info-o
+              label Male
+          .pretty.p-default.p-curve
+            input(type='radio', name='gender', value='female')
+            .state.p-info-o
+              label Female
+          .pretty.p-default.p-curve
+            input(type='radio', name='gender', value='other')
+            .state.p-info-o
+              label Other
+      //School
+      .form-group.row
+        label.col-md-3.col-form-label.font-weight-bold.text-right(for='school') School
+        .col-md-7
+          <select id="school" name="school"></select>
+      //Major
+      .form-group.row
+        label.col-md-3.col-form-label.font-weight-bold.text-right(for='major') Major
+        .col-md-7
+          <select id="major" name="major"></select>
+      //Graduating year
+      .form-group.row
+        label.col-md-3.col-form-label.font-weight-bold.text-right Expected Graduation Year
+        .col-sm-4
+          <select name="gradYear" id="gradYear">
+            <option disabled value=""> Please select your graduation year</option>
+            <option>2018</option>
+            <option>2019</option>
+            <option>2020</option>
+            <option>2021</option>
+            <option>2022</option>
+            <option>2023</option>
+          </select>
+      .form-group.row
+        label.col-md-3.col-form-label.font-weight-bold.text-right Expected Graduation Year
+        .col-sm-4
+          <select name="eduLevel" id="eduLevel">
+            <option disabled value=""> Please select your highest education level</option>
+            <option>High School</option>
+            <option>Undergrad</option>
+            <option>Graduate</option>
+            <option>PhD</option>
+          </select>
+      .form-group.row
+        label.col-md-3.col-form-label.font-weight-bold.text-right How many Hackathons have you been to?
+          .col-sm-4
+          <select name="numOfHackathons" id="numOfHackathons">
+            <option disabled value=""> Please select a value</option>
+            <option value="0">This is my first one!</option>
+            <option value="1">1</option>
+            <option value="2">2-4</option>
+            <option value="3">5-9</option>
+            <option value="4">10+</option>
+          </select>
+      
+      <input type="button" value="Next" id="next1" />
+    </fieldset>
+    <fieldset id="fieldset2">
+      <div>
+        <label for="multiselect" style="padding-right: 10px;">What Are You Interested In? </label>
+        <select id="reg-interest" class="multiselect" name="interests" multiple="multiple" style="width:100%;height: 30px;"></select>
+      </div>
+      <div>
+        <label for="multiselect" style="padding-right: 10px;">Languages You Are Familiar With: </label>
+        <select id="reg-languages" class="multiselect" name="languages" multiple="multiple" style="width:100%;height: 30px;"></select>
+      </div>
+      <div>
+        <label for="multiselect" style="padding-right: 10px;">What Technologies Have You Used? </label>
+        <select id="reg-technologies" class="multiselect" name="technologies" multiple="multiple" style="width:100%;height: 30px;"></select>
+      </div>
+      <div>
+        <label for="multiselect" style="padding-right: 10px;">What Fields Are You Interested In Working On? </label>
+        <select id="reg-fields" class="multiselect" name="fields" multiple="multiple" style="width:100%;height: 30px;"></select>
+      </div>
+    </fieldset>
+    
+    <fieldset id="fieldset3">
+      <div>
+          .label Upload Profile Image
+          input(type="file", name="myFile", id="imgInp")
+          img#img-upload(height='300;', width='300;')
+      </div>
+      <div style="padding-top:15px;">
+        <div class="row">
+          <div class="col-md-4">
+            <label>Website:</label>
+          </div>
+          <input class="pull-right" name="website" placeholder="Personal Website" />
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Devpost:</label>
+          </div>
+          <input class="pull-right" name="devpost" placeholder="Devpost" />
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Phone:</label>
+          </div>
+          <input class="pull-right" name="phone" placeholder="Phone" />
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Facebook:</label>
+          </div>
+          <input style="width:70%;" name="facebook" placeholder="https://www.facebook.com/your_name" />
+        </div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Instagram:</label>
+          </div>
+          <input style="width:70%;" name="instagram" placeholder="https://www.instagram.com/your_name" />
+        </div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Linkedin:</label>
+          </div>
+          <input style="width:70%;" name="linkedin" placeholder="https://www.linkedin.com/your_name" />
+        </div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Github:</label>
+          </div>
+          <input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
+        </div>
+      </div>
+      .form-group
+        .offset-sm-3.col-md-7.pl-2
+            button.btn.btn.btn-primary(type='submit')
+              i.fas.fa-pencil-alt.fa-sm
+              | Submit
+    </fieldset>
+
+
+  
+  

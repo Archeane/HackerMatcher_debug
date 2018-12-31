@@ -1,0 +1,17 @@
+[
+	{ "id": 1, "name": "Javascript" },
+	{ "id": 2, "name": "Jquery" },
+	{ "id": 3, "name": "Java" },
+	{ "id": 4, "name": "C#" },
+	{ "id": 5, "name": "PHP" },
+	{ "id": 6, "name": "Android" },
+	{ "id": 7, "name": "Python" },
+	{ "id": 8, "name": "HTML" },
+	{ "id": 11, "name": "CSS"},
+	{ "id": 12, "name": "iOS"},
+	{ "id": 13, "name": "Swift"},
+	{ "id": 14, "name": "Ruby"},
+	{ "id": 15, "name": "mysql"},
+	{ "id": 16, "name": "C"},
+	{ "id": 17, "name": "C++"}
+]

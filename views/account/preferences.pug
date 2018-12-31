@@ -1,0 +1,226 @@
+extends ../layout
+
+block append head
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
+    script(src="/js/preferences.js")
+
+block content
+  form(action="/preferences", method="POST")
+    input(type='hidden', name='_csrf', value=_csrf)
+    <div id="app">
+
+        <div class="lang" v-for="(lan, index) in languages">
+          <i v-on:click="deleteLanguage(index, lan)" class="fa fa-times" style="float-left"></i>{{lan[0]}}
+          <input v-bind:name="lan[0]" style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalLanguages < 5" data-toggle="modal" data-target="#modalLanguages" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalLanguages" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Languages</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(lan, index) in allLanguages">
+                  <div class="col-md-8">
+                    <span>{{lan}}</span>
+                    <i v-on:click="addLanguage(lan, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ints" v-for="(int, index) in interests">
+          <i v-on:click="deleteInterest(index, int)" class="fa fa-times" style="float-left"></i>{{int[0]}}
+          <input v-bind:name="int[0]" style="float:right" v-bind:value="int[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalInterests < 5" data-toggle="modal" data-target="#modalInterests" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalInterests" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Interests</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(int, index) in allInterests">
+                  <div class="col-md-8">
+                    <span>{{int}}</span>
+                    <i v-on:click="addInterest(int, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech" v-for="(lan, index) in technologies">
+          <i v-on:click="deleteTechnology(index, lan)" class="fa fa-times" style="float-left"></i>{{lan[0]}}
+          <input v-bind:name="lan[0]" style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalTechnologies < 5" data-toggle="modal" data-target="#modalTechnologies" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalTechnologies" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Technologies</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(lan, index) in allTechnologies">
+                  <div class="col-md-8">
+                    <span>{{lan}}</span>
+                    <i v-on:click="addTechnology(lan, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" v-for="(lan, index) in fields">
+          <i v-on:click="deleteField(index, lan)" class="fa fa-times" style="float-left"></i>{{lan[0]}}
+          <input v-bind:name="lan[0]" style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalFields" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalFields" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Fields</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(lan, index) in allFields">
+                  <div class="col-md-8">
+                    <span>{{lan}}</span>
+                    <i v-on:click="addField(lan, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    
+    <div>
+      h3.bold.center(style='padding-top:50px;') How much do you care about these when looking for a teammate?
+        .row.center(style='padding:30px;')
+          .col-md-4
+            h5.accent Similiar Interest
+          .col-md-8
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarinterersts', value='0')
+              .state.p-info-o
+                label Don't care at all
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarinterersts', value='1')
+              .state.p-info-o
+                label A bit important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarinterersts', value='2')
+              .state.p-info-o
+                label Somewhat important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarinterersts', value='3')
+              .state.p-info-o
+                label Pretty important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarinterersts', value='4')
+              .state.p-info-o
+                label Most important
+        .row.center(style='padding:30px;')
+          .col-md-4
+            h5.accent Similiar Languages
+          .col-md-8
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarlanguages', value='0')
+              .state.p-info-o
+                label Don't care at all
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarlanguages', value='1')
+              .state.p-info-o
+                label A bit important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarlanguages', value='2')
+              .state.p-info-o
+                label Somewhat important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarlanguages', value='3')
+              .state.p-info-o
+                label Pretty important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarlanguages', value='4')
+              .state.p-info-o
+                label Most important
+        .row.center(style='padding:30px;')
+          .col-md-4
+            h5.accent Similiar Technologies
+          .col-md-8
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiartechnologies', value='0')
+              .state.p-info-o
+                label Don't care at all
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiartechnologies', value='1')
+              .state.p-info-o
+                label A bit important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiartechnologies', value='2')
+              .state.p-info-o
+                label Somewhat important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiartechnologies', value='3')
+              .state.p-info-o
+                label Pretty important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiartechnologies', value='4')
+              .state.p-info-o
+                label Most important
+        .row.center(style='padding:30px;')
+          .col-md-4
+            h5.accent Similiar Fields
+          .col-md-8
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarfields', value='0')
+              .state.p-info-o
+                label Don't care at all
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarfields', value='1')
+              .state.p-info-o
+                label A bit important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarfields', value='2')
+              .state.p-info-o
+                label Somewhat important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarfields', value='3')
+              .state.p-info-o
+                label Pretty important
+            .pretty.p-default.p-curve
+              input(type='radio', name='similiarfields', value='4')
+              .state.p-info-o
+                label Most important
+    </div>
+    button.btn.btn.btn-primary(type='submit')
+      i.fas.fa-pencil-alt.fa-sm
+      | Submit
+
+    script.
+        var User = !{JSON.stringify(user)};
+    
