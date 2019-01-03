@@ -13,6 +13,12 @@ html
     
 
   body
+    script(src='/js/lib/jquery.min.js')
+    script(src='/js/lib/popper.min.js')
+    script(src='/js/lib/bootstrap.min.js')
+    script(src='/js/main.js')
+    
+
     include partials/header
 
     .container
@@ -21,14 +27,8 @@ html
 
     include partials/footer
 
-    script(src='/js/lib/jquery.min.js')
-    script(src='/js/lib/popper.min.js')
-    script(src='/js/lib/bootstrap.min.js')
-    script(src='/js/main.js')
-
-
+  
     block head
       script(src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js")
 
-    // Google Analytics: change UA-XXXXX-X to be your site's ID
     

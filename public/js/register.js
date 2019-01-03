@@ -1,11 +1,3 @@
-console.log('linked');
-
-fieldsApp = new Vue({
-	el: '#app-1',
-	data:{
-		message:"hello there"
-	}
-});
 
 $(document).ready(() =>{
 
@@ -119,4 +111,3 @@ $(document).ready(() =>{
 });
 
 
-console.log('hah');

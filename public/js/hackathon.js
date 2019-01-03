@@ -7,6 +7,15 @@ $('#university').text(Hackathon.university);
 $('#location').text(Hackathon.city+" "+Hackathon.state);
 $('#date').text(Hackathon.date);
 
+
+$('#pref').on('click', ()=>{
+	location.href = window.location.origin+"/preferences";
+});
+$('#showVis').on('click', ()=>{
+    location.href = window.location.href+"/visualization";
+});
+
+
 //currentHackerInterests = ["Machine Learning", "AI"...]
 var currentHackerInterests = [];
 var currentHackerLanguages = [];

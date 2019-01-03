@@ -5,7 +5,7 @@ block append head
     script(src="/js/preferences.js")
 
 block content
-  form(action="/preferences", method="POST")
+  form(action="/preferences", method="POST", id="preferencesForm")
     input(type='hidden', name='_csrf', value=_csrf)
     <div id="app">
 
@@ -217,7 +217,7 @@ block content
               .state.p-info-o
                 label Most important
     </div>
-    button.btn.btn.btn-primary(type='submit')
+    button.btn.btn.btn-primary(id="submitForm" type='submit')
       i.fas.fa-pencil-alt.fa-sm
       | Submit
 

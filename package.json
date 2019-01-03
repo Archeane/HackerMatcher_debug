@@ -65,6 +65,7 @@
     "pug": "^2.0.3",
     "randomstring": "^1.1.5",
     "request": "^2.88.0",
+    "socket.io": "^2.2.0",
     "stripe": "^6.10.0",
     "tumblr.js": "^2.0.0",
     "twilio": "^3.19.2",

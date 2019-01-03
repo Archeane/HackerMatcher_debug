@@ -78,17 +78,14 @@ function createTestUsers(k){
 
 	
 }
-//TODO: 
-//**include viewall visualization route/page/client backend visualization
-//??sepeate function for requesting algorithmn information -> only call it once 
-
 
 let pleasework = 'not working :(';
 
 //TODO:
-// 1. add corresponding fields after users controllers is finished
-// 2. link to preferences page and view all visualization
+// 1. add corresponding fields for test users after users controllers is finished
+// 2. Redirect preferences back to the hackathon page 
 exports.getHackathon = async(req,res, next) => {
+/*
 	userArr = [];
 	for(let i = 1; i < 40; i++){
 		var user = await createTestUsers(i);
@@ -101,7 +98,7 @@ exports.getHackathon = async(req,res, next) => {
 	}catch(e){
 		console.log('Error!', e);
 	}
-
+*/
 	Hackathon.findOne({id:req.params.id}, (err, hackathon)=>{
 		if(err){throw err;}
 		var zerorpc = require("zerorpc");

@@ -1,5 +1,11 @@
 console.log(User.preferences);
 
+$('#submitForm').on('click', ()=>{
+	$('#preferencesForm').submit();
+	history.go(-1);
+});
+
+//------------------prefill preferences-----------------
 var p2 = new Promise((res, rej) =>{
 	ints = [];
 	for(i = 0; i < User.preferences.interests.length; i++){
@@ -59,7 +65,29 @@ var p4 = new Promise((res, rej) =>{
 	});	
 });
 
+//----------------prefill carescores--------------------
+if(User.hasOwnProperty('careScores')){
+	console.log('has carescores');
+	if(User.careScores.interests != null){
+		console.log(User.careScores.interests);
+		var score = Math.round(User.careScores.interests/2);
+		$(":input[name=similiarinterersts][value="+score+"]").attr('checked', 'checked');;
+	}
+	if(User.careScores.languages != null){
+		var score = Math.round(User.careScores.languages/2);
+		$(":input[name=similiarlanguages][value="+score+"]").attr('checked', 'checked');;
+	}
+	if(User.careScores.technologies != null){
+		var score = Math.round(User.careScores.technologies/2);
+		$(":input[name=similiartechnologies][value="+score+"]").attr('checked', 'checked');
+	}
+	if(User.careScores.fields != null){
+		var score = Math.round(User.careScores.fields/2);
+		$(":input[name=similiarfields][value="+score+"]").attr('checked', 'checked');
+	}
+}
 
+//-------------------preferences settings----------------
 var app = new Vue({
 	el: '#app',
 	data:{

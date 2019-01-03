@@ -16,11 +16,13 @@ const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const expressValidator = require('express-validator');
-const expressStatusMonitor = require('express-status-monitor');
+//TODO: this might be interfering with chat
+//const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
+
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -47,6 +49,7 @@ const passportConfig = require('./config/passport');
  */
 const app = express();
 
+
 /**
  * Connect to MongoDB.
  */
@@ -67,7 +70,7 @@ app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
 app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.use(expressStatusMonitor());
+//app.use(expressStatusMonitor());
 app.use(compression());
 app.use(sass({
   src: path.join(__dirname, 'public'),
@@ -128,6 +131,34 @@ app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/popper.js/d
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/jquery/dist'), { maxAge: 31557600000 }));
 app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free/webfonts'), { maxAge: 31557600000 }));
+
+
+
+//-----------------CHAT TESTING AREA------------------
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+app.get('/chat', homeController.getChat);
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+
+
+
+
+
+
+//---------------END CHAT TESTING-------------------------
+
+
+
 
 /**
  * Primary app routes.
@@ -258,12 +289,19 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-/**
- * Start Express server.
- */
-app.listen(app.get('port'), () => {
+
+//---------chat server----------
+http.listen(app.get('port'), function(){
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });
 
+
+/*
+//Start Express server.
+app.listen(app.get('port'), () => {
+  console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
+  console.log('  Press CTRL-C to stop\n');
+});
+*/
 module.exports = app;

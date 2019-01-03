@@ -468,10 +468,7 @@ exports.postPreferences = (req, res) => {
 };
 
 
-/**
- * POST /account/password
- * Update current password.
- */
+
 exports.postUpdatePassword = (req, res, next) => {
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
@@ -494,10 +491,7 @@ exports.postUpdatePassword = (req, res, next) => {
   });
 };
 
-/**
- * POST /account/delete
- * Delete user account.
- */
+
 exports.postDeleteAccount = (req, res, next) => {
   User.deleteOne({ _id: req.user.id }, (err) => {
     if (err) { return next(err); }
@@ -632,10 +626,6 @@ exports.postReset = (req, res, next) => {
     .catch(err => next(err));
 };
 
-/**
- * GET /forgot
- * Forgot Password page.
- */
 exports.getForgot = (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/');
@@ -646,7 +636,6 @@ exports.getForgot = (req, res) => {
 };
 
 /**
- * POST /forgot
  * Create a random token, then the send user an email with a reset link.
  */
 exports.postForgot = (req, res, next) => {
