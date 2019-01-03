@@ -1,0 +1,12 @@
+extends layout
+
+block append head
+	script(src="/js/lib/d3.min.js")
+	script(src="/js/visualization.js")
+
+block content
+
+	<button onclick="DisplayVisualization()">Show Visualization</button>
+	<div id = "vis"></div>
+	script.
+		var Matches = !{JSON.stringify(matches)};

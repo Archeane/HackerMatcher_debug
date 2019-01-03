@@ -2,6 +2,7 @@ extends layout
 
 block append head
 	script(src='/js/hackathon.js')
+	
 
 block content
 	.about
@@ -9,6 +10,8 @@ block content
 		span#university
 		span#location
 		span#date
+
+
 	<div id = "app">
 		<div class="row" v-for="(hackerPref, index) in preferences">  <!--hacker.preference-->
 			<div class = "col-md-4">
@@ -27,8 +30,14 @@ block content
 			<br />
 		</div>
 	</div>
+
+	<button onclick="DisplayVisualization()">Show Visualization</button>
+	<div id = "vis">
+		
+	</div>
 	
 	script.
 		var Hackathon = !{JSON.stringify(Hackathon)};
 		var result = !{JSON.stringify(result)};
 		var currentHacker = !{JSON.stringify(currentHacker)};
+		

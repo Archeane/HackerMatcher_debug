@@ -12,7 +12,6 @@ var p2 = new Promise((res, rej) =>{
 				allInts.push(data[i]['name']);
 			}
 		}
-		console.log(allInts);
 	});
 });
 
@@ -28,7 +27,6 @@ var p1 = new Promise((resolve, reject) => {
 				allLanguages.push(data[i]['name']);
 			}
 		}
-		console.log(allLanguages);
 	});
 });
 
@@ -44,7 +42,6 @@ var p3 = new Promise((res,rej)=>{
 				allTechs.push(data[i]['name']);
 			}
 		}
-		console.log(allTechs);
 	});	
 });
 var p4 = new Promise((res, rej) =>{
@@ -59,7 +56,6 @@ var p4 = new Promise((res, rej) =>{
 				allFields.push(data[i]['name']);
 			}
 		}
-		console.log(allFields);
 	});	
 });
 

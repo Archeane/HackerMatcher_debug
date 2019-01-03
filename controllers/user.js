@@ -238,8 +238,13 @@ exports.postRegister = (req, res) => {
     user.preferences.fields=fields || [];
 
     //-----------------------------social media-------------------------------
-    
-
+    user.socialmedia.facebook = req.body.facebook || '';
+    user.socialmedia.phone = req.body.phone || '';
+    user.socialmedia.website = req.body.website || '';
+    user.socialmedia.devpost = req.body.devpost || '';
+    user.socialmedia.instagram = req.body.instagram || '';
+    user.socialmedia.linkedin = req.body.linkedin || '';
+    user.socialmedia.github = req.body.github || '';
     //---------upload profile to gcloud-----------
     const file = req.file;
     if(file){ //upload pfp to gcloud
@@ -307,10 +312,10 @@ exports.postUpdateProfile = (req, res, next) => {
   console.log(req.body);
   User.findById(req.user.id, (err, user) => {
     if (err) { return next(err); }
-    user.profile.gender = req.body.gender || '';
-    user.profile.location = req.body.location || '';
-    user.profile.website = req.body.website || '';
-    const file = req.file;
+      user.profile.gender = req.body.gender || '';
+      user.profile.location = req.body.location || '';
+      user.profile.website = req.body.website || '';
+      const file = req.file;
     if(file){
       console.log(file);
       var localReadStream = fs.createReadStream(file.path);
@@ -421,13 +426,16 @@ exports.postPreferences = (req, res) => {
               var containedPref = user['preferences'][mapping[j]];
               var temp = [];
               temp.push(key);
-              temp.push(updates[key]);
+              temp.push(parseInt(updates[key]));
+              console.log(temp);
               updatedresults[j].push(temp);
             }
           }
         }
       }
     }
+    console.log('updatedresults:');
+    console.log(updatedresults);
     user.preferences.interests = updatedresults[0];
     user.preferences.languages = updatedresults[1];
     user.preferences.technologies = updatedresults[2];

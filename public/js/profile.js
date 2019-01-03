@@ -1,6 +1,6 @@
-console.log(User.profile.school);
+console.log(User);
 
-//populate demographic content
+//----------------------about-----------------------
 $('#pfp').attr('src', User.profile.picture);
 $('#name').text(User.profile.firstName+" "+User.profile.lastName);
 $('#gender').text(User.profile.gender || '');
@@ -8,6 +8,27 @@ $('#school').text(User.profile.school || '');
 $('#major').text(User.profile.major || '');
 $('#gradYear').text(User.profile.graduationYear || '');
 $('#eduLevel').text(User.profile.educationLevel || '');
+
+var socialmedias = []
+for (var key in User.socialmedia){
+	if(User.socialmedia.hasOwnProperty(key)){
+		if(User.socialmedia[key] != '' || key.toLowerCase() != 'tokens'){
+			var temp = [];
+			temp.push(key);
+			temp.push(User.socialmedia[key]);
+			socialmedias.push(temp);
+		}
+	}
+}
+
+socialmedia = new Vue({
+	el: "#about",
+	data:{
+		socialmedias: socialmedias
+	}
+});
+
+//-------------------preferences---------------------
 
 langs = []
 for(i = 0; i < User.preferences.languages.length; i++){

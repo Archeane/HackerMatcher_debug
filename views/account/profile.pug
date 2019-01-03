@@ -53,11 +53,15 @@ block content
           <option value="graduate">Graduate</option>
           <option value="phd">PhD</option>
         </select>
+
+      .content
+        <li v-for="(socialmedia, index) in socialmedias">
+          <a v-bind:class="[{'fab': true}, socialmedia[0] ? 'fa-' + socialmedia[0] : '']"v-bind:value="socialmedia[1]"></a>
+        </li>
     </div>
     
-
+    
     <div id="app">
-      <p>{{message}}</p>
       .content
         <div class="languages" v-for="(language, index) in languages">
           <span style="float:right">{{language[1]}}/10</span>

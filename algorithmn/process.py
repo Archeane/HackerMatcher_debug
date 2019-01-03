@@ -35,7 +35,7 @@ def calculatecategoryscore(currentHacker, carescores, hacker, category):
     for element in arr1:
         for matching in arr2:
             if element[0] == matching[0]:
-                scoresum += min(element[1], matching[1])
+                scoresum += min(int(element[1]), int(matching[1]))
     scoresum = scoresum*multiplier
     return scoresum
 
@@ -68,7 +68,6 @@ class HelloRPC(object):
         #TODO: get hackathon hackers from database
         allHackers = db['users'].find()
         arr = calculateallscores(currentHacker, allHackers)
-        print(arr)
         return arr
 
 s = zerorpc.Server(HelloRPC())

@@ -70,10 +70,12 @@ function createTestUsers(k){
 //??sepeate function for requesting algorithmn information -> only call it once 
 
 
+let pleasework = 'not working :(';
+
 //TODO:
 // 1. add corresponding fields after users controllers is finished
 // 2. link to preferences page and view all visualization
-exports.getHackathon = async(req,res) => {
+exports.getHackathon = async(req,res, next) => {
 	/*
 	userArr = [];
 	for(let i = 1; i < 20; i++){
@@ -97,6 +99,7 @@ exports.getHackathon = async(req,res) => {
 		client.connect("tcp://127.0.0.1:4242");
 		client.invoke("hello", req.user.email, hackathon.name, function(error, response, more) {
 			result = response;
+			pleasework = response;
 			result = result.slice(0,10);
 			toptenhackers = [];
 
@@ -118,4 +121,39 @@ exports.getHackathon = async(req,res) => {
 		});
 		
 	});
+
 };
+
+exports.getHackathonVisualization = (req, res, next) =>{
+	console.log(pleasework);
+	let topfiftyhackers = pleasework.slice(0, 50); 
+	var minifiedUsers = [];						//array of top 50 hackers with minified data
+	new Promise(async(resolve, reject) => {
+		for(let hacker of topfiftyhackers){
+			let data = await User.findOne({'email':hacker[0]});
+			var user = JSON.stringify({
+				"email":data.email,
+				"numOfHackathons":data.numOfHackathons,
+				"name": data.name,
+				"profileurl": data.profile.picture,
+				"school":data.profile.school,
+				"major":data.profile.major,
+				"graduationYear":data.profile.graduationYear,
+				"educationLevel":data.profile.educationLevel,
+				"score": hacker[1]
+			});
+			//console.log(user);
+			minifiedUsers.push(user);
+		}
+		console.log(minifiedUsers);
+		resolve(minifiedUsers);
+	}).then(function(result){
+		res.render('visualization', {
+			title:'Visualization', matches: result
+		});
+	}, function(err){
+		throw err;
+	});
+
+}
+

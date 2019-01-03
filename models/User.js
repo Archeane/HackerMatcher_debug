@@ -11,14 +11,18 @@ const userSchema = new mongoose.Schema({
   passwordResetToken: String,
   passwordResetExpires: Date,
 
-  facebook: String,
-  twitter: String,
-  google: String,
-  github: String,
-  instagram: String,
-  linkedin: String,
-  website: String,
-  tokens: Array,
+  socialmedia:{
+    facebook: String,
+    twitter: String,
+    google: String,
+    github: String,
+    instagram: String,
+    linkedin: String,
+    website: String,
+    tokens: Array,
+    phone: String,
+    devpost: String,
+  },
 
   profile: {
     major: String,

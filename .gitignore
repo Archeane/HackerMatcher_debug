@@ -7,6 +7,9 @@ lib-cov
 *.pid
 *.gz
 *.swp
+*.env*
+clientupload.json
+
 
 pids
 logs
