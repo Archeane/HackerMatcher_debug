@@ -7,6 +7,28 @@ block append head
 block content
 
 	<button onclick="DisplayVisualization()">Show Visualization</button>
+	.row.filters
+		.col-md-3
+			#major.dropdown
+				button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+					| Majors
+				.dropdown-menu(aria-labelledby='dropdownMenuButton')
+
+		.col-md-3
+			#graduationYear.dropdown
+				button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+					| Graduation Year
+				.dropdown-menu(aria-labelledby='dropdownMenuButton')
+		.col-md-3
+			#educationLevel.dropdown
+				button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+					| Education Level
+				.dropdown-menu(aria-labelledby='dropdownMenuButton')
+		.col-md-3
+			#hackathons.dropdown
+				button#dropdownMenuButton.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+					| Number Of Hackathons
+				.dropdown-menu(aria-labelledby='dropdownMenuButton')
 	<div id = "vis"></div>
 	script.
 		var Matches = !{JSON.stringify(matches)};

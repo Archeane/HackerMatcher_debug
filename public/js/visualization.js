@@ -1,30 +1,34 @@
-console.log(Matches);
 function DisplayVisualization(){
-	display(allMatches);
+	var MatchesJSON = [];
+	for(i = 0; i < Matches.length; i++){
+		MatchesJSON.push(JSON.parse(Matches[i]));
+	}
+	console.log(MatchesJSON);
+	
 //-------------filters-----------------------
-/*
 	var allMajors = [];
 	var allGradYears = [];
 	var allEduLevels = [];
 	var allNumOfHacks = [];
 	
-
-	for(i = 0; i < allMatches.length; i++){
-		var user = JSON.parse(allMatches[i]);
+	//add all the fields to filters array
+	for(i = 0; i < MatchesJSON.length; i++){
+		var user = MatchesJSON[i];
 		if(!(allMajors.includes(user.major))){
 			allMajors.push(user.major);
 		}
-		if(!(allGradYears.includes(user.graduationYear))){
-			allGradYears.push(user.graduationYear);
+		if(!(allGradYears.includes(Math.floor(user.graduationYear)))){
+			allGradYears.push(Math.floor(user.graduationYear));
 		}
 		if(!(allEduLevels.includes(user.educationLevel))){
 			allEduLevels.push(user.educationLevel);
 		}
-		if(!(allNumOfHacks.includes(user.hackathons.length))){
-			allNumOfHacks.push(user.hackathons.length);
+		if(!(allNumOfHacks.includes(user.numOfHackathons))){
+			allNumOfHacks.push(user.numOfHackathons);
 		}
 	}
 
+	//-----append options to filters----------
 	var gradFilter = document.querySelector("#graduationYear > .dropdown-menu");
 	for(g = 0; g < allGradYears.length; g++){
 		var div = document.createElement('div');
@@ -101,13 +105,15 @@ function DisplayVisualization(){
 			$('#vis').empty();
 			var parent = $(this).parentsUntil(".dropdown").parent().attr('id');
 			filters[parent].push($(this).val());
-			display(matches, filters);
+			console.log(filters);
+			display(MatchesJSON, filters);
 		}else{
 			$('#vis').empty();
-			display(matches);
+			display(MatchesJSON);
 		}
 	});
-	*/
+	
+	display(MatchesJSON);
 	
 }
 
@@ -166,7 +172,6 @@ function bubbleChart() {
 	// working with data.
 	var myNodes = rawData.map(function (d) {
 	  return {
-	  	urlId: d.urlId,
 	  	email: d.email,
 		radius: radiusScale(+d.score),
 		value: d.score,
@@ -176,12 +181,11 @@ function bubbleChart() {
 		graduationYear: d.graduationYear,
 		educationLevel: d.educationLevel,
 		imgURL: d.profileurl,
-		hackathons: d.hackathons,
+		hackathons: d.numOfHackathons,
 		x: Math.random() * 900,
 		y: Math.random() * 800
 	  };
 	});
-
 	// sort them to prevent occlusion of smaller nodes.
 	myNodes.sort(function (a, b) { return b.value - a.value; });
 
@@ -193,6 +197,7 @@ function bubbleChart() {
 	radiusScale.domain([0, maxAmount]);
 
 	nodes = createNodes(rawData);
+	console.log(nodes);
 	force.nodes(nodes);
 
 	svg = d3.select(selector)
@@ -214,12 +219,12 @@ function bubbleChart() {
 		.attr('xmlns:xlink','http://www.w3.org/1999/xlink')
 	  	.attr("xlink:href", 'http://placekitten.com/g/48/48');
 
-	defs.selectAll('.cirlces-pattern')
+	defs.selectAll('.circles-pattern')
 		.data(nodes)
 		.enter().append('pattern')
 		.attr('class','circles-pattern')
 		.attr('id', function(d){
-			return d.urlId;
+			return d.email;
 		})
 		.attr('height',"100%")
 		.attr('width', "100%")
@@ -244,13 +249,12 @@ function bubbleChart() {
 	  .attr('stroke-width', 2)
 	  .on('mouseover', showDetail)
 	  .on('mouseout', hideDetail)
-	  .on('click', function(d){
-	  	window.location = "http://localhost:8080/users/" + d.urlId;
-	  })
 	  .style('fill', function(d){
-	  	return 'url(#'+d.urlId+')';
-	  });
-	  
+	  	  return 'url(#'+d.email+')';			//get the image in defs patterns, which has ids=d.email
+	  })
+	  .on('click', function(d){
+	  	window.location = "http://localhost:8080/users/" + d.email;	//TODO: REPLACE EMAIL WITH URLID?
+	  })
 
 	bubbles.transition()
 	  .duration(2000)
@@ -307,7 +311,6 @@ function bubbleChart() {
   function showDetail(d) {
 	d3.select(this).attr('stroke', 'black')
 
-
 	var content = '<div class="content">';
 	content += '<div class="row"><div class="col-md-12"><span class="name">'+d.name+', </span>';
 	content += '<span class="educationLevel">'+d.educationLevel+'</span></div></div>';
@@ -315,11 +318,8 @@ function bubbleChart() {
 	content += '<div class="row">';
 	content += '<div class="col-md-12"><span class="major text-left">'+d.major+', </span>';
 	content += '<span class="graduationYear text-right">'+d.graduationYear+'</span></div></div>';
-	var hacks = d.hackathons;
 	content += '<div class="row">';
-	for(i = 0; i < hacks.length; i++){
-		content += '<span class="hackathons">'+hacks[i]+'</span>';
-	}
+	content += '<span class="numOfHackathons">'+d.hackathons+" Hackathons"+'</span></div>';
 	content += '</div>';
 
 	tooltip.showTooltip(content, d3.event);

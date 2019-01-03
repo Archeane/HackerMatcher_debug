@@ -9,6 +9,8 @@ function createTestUsers(k){
 	const allTechnologies = require('../public/assets/technologies.json');
 	const allFields = require('../public/assets/fields.json');
 	const allMajors = require('../public/assets/majors.json');
+	const allSchools = require('../public/assets/universities.json');
+	const random_name = require('node-random-name');
 	
 	var interests1 = [];
 	var languages1 = [];
@@ -46,17 +48,28 @@ function createTestUsers(k){
 		fields1.push(temp);
 	}
 	major1 = allMajors[Math.floor(Math.random()*allMajors.length)]['major'];
-		
+	school1 = allSchools[Math.floor(Math.random()*allSchools.length)]['institution'];
+
+
 	var Email = k.toString()+"@gmail.com";
 	const user = new User({
 		email: Email,
 		numOfHackathons: Math.floor(Math.random()*5)
 	});
+	if(k % 2 == 0){
+		user.profile.picture = 'https://randomuser.me/api/portraits/women/'+Math.floor(Math.random()*99)+'.jpg';
+	}else{
+		user.profile.picture = 'https://randomuser.me/api/portraits/men/'+Math.floor(Math.random()*99)+'.jpg';
+	}
 	user.preferences.interests = interests1;
 	user.preferences.languages = languages1;
 	user.preferences.fields = fields1;
 	user.preferences.technologies = technologies1;
+	user.profile.name = random_name();
 	user.profile.major = major1;
+	user.profile.school = school1;
+	user.profile.graduationYear = 2018+Math.random()*5;
+	user.profile.educationLevel = "Undergraduate";
 	user.careScores.interests = Math.floor(Math.random()*5);
 	user.careScores.languages = Math.floor(Math.random()*5);
 	user.careScores.technologies = Math.floor(Math.random()*5);
@@ -76,9 +89,8 @@ let pleasework = 'not working :(';
 // 1. add corresponding fields after users controllers is finished
 // 2. link to preferences page and view all visualization
 exports.getHackathon = async(req,res, next) => {
-	/*
 	userArr = [];
-	for(let i = 1; i < 20; i++){
+	for(let i = 1; i < 40; i++){
 		var user = await createTestUsers(i);
 		userArr.push(user);
 	}
@@ -89,7 +101,6 @@ exports.getHackathon = async(req,res, next) => {
 	}catch(e){
 		console.log('Error!', e);
 	}
-	*/
 
 	Hackathon.findOne({id:req.params.id}, (err, hackathon)=>{
 		if(err){throw err;}
@@ -125,35 +136,48 @@ exports.getHackathon = async(req,res, next) => {
 };
 
 exports.getHackathonVisualization = (req, res, next) =>{
-	console.log(pleasework);
-	let topfiftyhackers = pleasework.slice(0, 50); 
-	var minifiedUsers = [];						//array of top 50 hackers with minified data
-	new Promise(async(resolve, reject) => {
-		for(let hacker of topfiftyhackers){
-			let data = await User.findOne({'email':hacker[0]});
-			var user = JSON.stringify({
-				"email":data.email,
-				"numOfHackathons":data.numOfHackathons,
-				"name": data.name,
-				"profileurl": data.profile.picture,
-				"school":data.profile.school,
-				"major":data.profile.major,
-				"graduationYear":data.profile.graduationYear,
-				"educationLevel":data.profile.educationLevel,
-				"score": hacker[1]
+	Hackathon.findOne({id:"1"}, (err, hackathon)=>{
+		if(err){throw err;}
+		var zerorpc = require("zerorpc");
+
+		var client = new zerorpc.Client();
+		client.connect("tcp://127.0.0.1:4242");
+		client.invoke("hello", req.user.email, hackathon.name, function(error, response, more) {
+			let topfiftyhackers = response.slice(0, 50); 
+			var minifiedUsers = [];						//array of top 50 hackers with minified data
+			new Promise(async(resolve, reject) => {
+				for(let hacker of topfiftyhackers){
+					let data = await User.findOne({'email':hacker[0]});
+					var user = JSON.stringify({
+						"email":data.email,
+						"numOfHackathons":data.numOfHackathons,
+						"name": data.profile.name,
+						"profileurl": data.profile.picture,
+						"school":data.profile.school,
+						"major":data.profile.major,
+						"graduationYear":data.profile.graduationYear,
+						"educationLevel":data.profile.educationLevel,
+						"score": hacker[1]
+					});
+					//console.log(user);
+					minifiedUsers.push(user);
+				}
+				console.log(minifiedUsers);
+				resolve(minifiedUsers);
+			}).then(function(result){
+				res.render('visualization', {
+					title:'Visualization', matches: result
+				});
+			}, function(err){
+				throw err;
 			});
-			//console.log(user);
-			minifiedUsers.push(user);
-		}
-		console.log(minifiedUsers);
-		resolve(minifiedUsers);
-	}).then(function(result){
-		res.render('visualization', {
-			title:'Visualization', matches: result
 		});
-	}, function(err){
-		throw err;
+		
 	});
+/*
+	console.log(pleasework);
+*/
+	
 
 }
 

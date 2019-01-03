@@ -54,8 +54,9 @@ def calculateallscores(currentHacker, allHackers):
 
     for hacker in allHackers:
         similiarity = calculatehackerscore(currentHacker, carescores, hacker)
-        temp = [hacker['email'], similiarity]
-        totalscores.append(temp)
+        if similiarity != 0:
+            temp = [hacker['email'], similiarity]
+            totalscores.append(temp)
 
     totalscores = sorted(totalscores, key=lambda l:l[1], reverse=True)
     return totalscores

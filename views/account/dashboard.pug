@@ -1,0 +1,156 @@
+extends ../layout
+
+block append head
+  script(src="/js/dashboard.js")
+
+block content
+  .pb-2.mt-2.mb-4.border-bottom
+    h3 Profile Information
+
+  form(action='/account/profile?_csrf='+_csrf, method='POST', enctype='multipart/form-data')
+    
+    <img id="pfp" src='' height="300" width="300"></img>
+    .settings
+      input(type="file", name="myFile", id="imgInp")
+
+    <div id="about">
+
+      .content
+        <span id="name"></span>
+      .content
+        <span id="gender"></span>
+      .settings
+        <select id="gender-select" name="gender">
+          <option value='male'>Male</option>
+          <option value='female'>Female</option>
+          <option value='other'>Other</option>
+        </select>
+      .content
+        <span id="school"></span>
+      .settings
+        <select id="school-select" name="school"></select>
+      .content
+        <span id="major"></span>
+      .settings
+        <select id="major-select" name="major"></select>
+      .content
+        <span id="gradYear"></span>
+      .settings
+        <select id="gradYear-select" name="gradYear">
+          <option value="2018">2018</option>
+          <option value="2019">2019</option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+        </select>
+      .content
+        <span id="eduLevel"></span>
+      .settings
+        <select id="eduLevel-select" name="eduLevel">
+          <option value="highschool">High School</option>
+          <option value="undergrad">Undergrad</option>
+          <option value="graduate">Graduate</option>
+          <option value="phd">PhD</option>
+        </select>
+
+      .content
+        <li v-for="(socialmedia, index) in socialmedias">
+          <a v-bind:class="[{'fab': true}, socialmedia[0] ? 'fa-' + socialmedia[0] : '']"v-bind:value="socialmedia[1]"></a>
+        </li>
+    </div>
+    
+    
+    <div id="app">
+      .content
+        <div class="languages" v-for="(language, index) in languages">
+          <span style="float:right">{{language[1]}}/10</span>
+          <li>{{language[0]}}</li>
+        </div>
+      .settings
+        <input type="hidden" name="techContent" id="techContent"  />
+        <div class="lang" v-for="(lan, index) in languages">
+          <i v-on:click="deleteLanguage(index, lan)" class="fa fa-times" style="float-left"></i>{{lan[0]}}
+          <input style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalLanguages < 5" data-toggle="modal" data-target="#modalLanguages" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalLanguages" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Languages</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(lan, index) in allLanguages">
+                  <div class="col-md-8">
+                    <span>{{lan}}</span>
+                    <i v-on:click="addLanguage(lan, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    
+      <div class="interests" v-for="(interest, index) in interests">
+        <span style="float:right">{{interest[1]}}/10</span>
+        <li>{{interest[0]}}</li>
+      </div>
+      <div class="technologies" v-for="(technology, index) in technologies">
+        <span style="float:right">{{technology[1]}}/10</span>
+        <li>{{technology[0]}}</li>
+      </div>
+      <div class="fields" v-for="(field, index) in fields">
+        <span style="float:right">{{field[1]}}/10</span>
+        <li>{{field[0]}}</li>
+      </div>
+    </div>
+
+      
+    
+    .form-group
+      .offset-sm-3.col-md-7.pl-2
+        button.btn.btn.btn-primary(type='submit')
+          i.fas.fa-pencil-alt.fa-sm
+          | Update Profile
+
+  .pb-2.mt-2.mb-4.border-bottom
+    h3 Change Password
+
+  form(action='/account/password', method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='password') New Password
+      .col-md-7
+        input.form-control(type='password', name='password', id='password', autocomplete='new-password')
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='confirmPassword') Confirm Password
+      .col-md-7
+        input.form-control(type='password', name='confirmPassword', id='confirmPassword', autocomplete='new-password')
+    .form-group
+      .offset-sm-3.col-md-7.pl-2
+        button.btn.btn-primary(type='submit')
+          i.fas.fa-lock.fa-sm
+          | Change Password
+
+  .pb-2.mt-2.mb-4.border-bottom
+    h3 Delete Account
+
+  form(action='/account/delete', method='POST', onsubmit="return confirm('Are you sure you want to delete your account?');")
+    .form-group
+      p.offset-sm-3.col-md-7.pl-2 You can delete your account, but keep in mind this action is irreversible.
+      input(type='hidden', name='_csrf', value=_csrf)
+      .offset-sm-3.col-md-7.pl-2
+        button.btn.btn-danger(type='submit')
+          i.fas.fa-trash-alt.fa-sm
+          | Delete my account
+
+  script.
+    var User = !{JSON.stringify(user)};
+    
+  

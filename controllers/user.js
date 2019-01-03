@@ -1,3 +1,14 @@
+/**
+ *   PROBLEMS TO BE ADDRESSED for production:
+ *   1. UrlID = tempoary using email
+ *   2. CSRF tokens in url for postregister, postaccount for uploading
+ *   3. Error Handling
+ * 
+ */
+
+
+
+
 const { promisify } = require('util');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -297,18 +308,21 @@ exports.postRegister = (req, res) => {
   });
 }
 
+
 //TODO:
 // 1. include all fields in register
 exports.getAccount = (req, res) => {
-  res.render('account/profile', {
-    title: 'Account Management', user:req.user
-  });
+  if(req.user){
+    res.render('account/dashboard', {
+      title: 'Account Management', user:req.user
+    });
+  }
 };
 
 //TODO:
 // 1. include all fields in register
 // 2. test modification to database
-exports.postUpdateProfile = (req, res, next) => {
+exports.postUpdateDashboard = (req, res, next) => {
   console.log(req.body);
   User.findById(req.user.id, (err, user) => {
     if (err) { return next(err); }
@@ -452,8 +466,6 @@ exports.postPreferences = (req, res) => {
   });
   
 };
-
-
 
 
 /**
@@ -717,4 +729,22 @@ exports.postForgot = (req, res, next) => {
     .then(sendForgotPasswordEmail)
     .then(() => res.redirect('/forgot'))
     .catch(next);
+};
+
+
+exports.getUser = (req, res) => {
+  console.log(req.params);
+  console.log(req.params.id);
+  if(req.user && req.params.id == req.user.email){
+    res.render('account/dashboard',{
+      title:'Account Management', user: req.user
+    })
+  }
+  User.findOne({"email": req.params.id}, (err, user) => {
+    if(err){throw err;}
+    console.log(user);
+    res.render('account/profile', {
+      title: 'Account Management', user:user
+    });
+  });
 };

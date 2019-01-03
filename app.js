@@ -93,7 +93,7 @@ app.use(flash());
 
 
 app.post('/register', passportConfig.isAuthenticated, upload.single('myFile'), userController.postRegister);
-app.post('/account/profile', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateProfile);
+app.post('/account/dashboard', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
 
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
@@ -157,6 +157,7 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
+app.get('/users/:id', userController.getUser);
 /**
  *  HACKATHONS routes
  */
