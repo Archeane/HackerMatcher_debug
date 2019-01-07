@@ -1,12 +1,10 @@
 #register-box {
-  border: 5px solid black;
+  border: 5px solid red;
   text-align: center;
 }
 
 #submitRegister {
-  position: relative;
-  top: 50%;
-  left: 50%;
+  
 }
 
 /*# sourceMappingURL=landing.css.map */
