@@ -1,0 +1,16 @@
+#register-box{
+    border:1px solid black;
+    width: 50%;
+    margin: 0 auto;
+    padding: 2%;
+    margin-top: 5%; 
+}
+
+#submitRegister{
+    display: block;
+    margin: 0 auto;
+}
+
+#title{
+    text-align: center;
+}

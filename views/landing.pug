@@ -1,11 +1,13 @@
 extends layout
 
-block append head
+block append css
 	link(rel='stylesheet', href='/css/landing.css')
 
 block content
 	div#register-box
 		div.center
+			h1#title
+				| Sign Up
 			form(action='/signup', method='POST', id="signupForm")
 				input(type='hidden', name='_csrf', value=_csrf)
 				#error(style="background: red; color: #fff; width: 80%; display:none;padding:5px;")
@@ -22,5 +24,5 @@ block content
 				.form-group.offset-sm-3.col-md-7.pl-2
 				button.btn.btn-success(type='submit' id="submitRegister")
 					i.fas.fa-user-plus
-						| Signup
+						| Register
 	
