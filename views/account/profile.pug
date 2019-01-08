@@ -4,6 +4,11 @@ block append head
   script(src="/js/profile.js")
 
 block content
+  form(id="startChat", method="POST")
+    input(type='hidden', name='_csrf', value=_csrf)
+    input(name="composedMessage" type="text")
+    button(type='submit') CHAT
+    
   .pb-2.mt-2.mb-4.border-bottom
     h3 Profile Information
 
@@ -42,6 +47,6 @@ block content
   </div>
 
   script.
-    var User = !{JSON.stringify(user)};
+    var User = !{JSON.stringify(Profile)};
     
   

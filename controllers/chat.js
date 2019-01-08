@@ -52,36 +52,50 @@ exports.getConversation = function(req, res, next) {
       for(var i = 0; i < participants.length; i++){
         if(participants[i] == req.user._id.toString()){
           validated = true;
-          //populating the conversation with messages
-          Message.find({ "conversationId":req.params.conversationID})
-            .select('createdAt body author')
-            .sort('-createdAt')
-            .populate({
-              path: 'author',
-              select: 'profile.firstName profile.lastName'
-            })
-            .exec(function(err, messages) {
-              if (err) {
-                res.send({ error: err });
-                return next(err);
+
+          //get all participants information except current user
+          var length = participants.length;
+          var participantsInfo = [];
+          participants.forEach((partcipant)=>{
+            User.findOne(partcipant, (err, user)=>{
+              length--;
+              if(err){throw err;}
+              if(user && user._id.toString() != req.user._id.toString()){
+                var participantInfo = [];
+                participantInfo.push(user._id);
+                participantInfo.push(user.profile.name || "");
+                participantInfo.push(user.profile.picture || "");
+                participantsInfo.push(participantInfo);
               }
-              console.log(messages);
-              res.render('chat', {messages: messages, participants: participants});
-              //res.status(200).json({ conversation: messages });
-          });
+              if(length == 0){
+                //populating the conversation with messages
+                Message.find({ "conversationId":req.params.conversationID})
+                  .select('createdAt body author')
+                  .sort('-createdAt')
+                  .populate({
+                    path: 'author',
+                    select: 'profile.firstName profile.lastName'
+                  })
+                  .exec(function(err, messages) {
+                    if (err) {
+                      res.send({ error: err });
+                      return next(err);
+                    }
+                    res.render('chat', {messages: messages, participants: participantsInfo, currentUser: req.user});
+                    //res.status(200).json({ conversation: messages });
+                });
+              }
+            }); 
+          }); //end of foreach
         }
-      }
+      }//end of for
       //current user is not one of the particpants of the conversation
-    }
+    }//end of if(req.user)
     if(!validated){
       res.status(400).json({error: "ERROR! You do not have permission to access this conversation!"});
-    }
-    
-    
-      
-    
-    
-  });
+    }//end of if(!validated)
+
+  });//end of Conversation.findOne
 
 }
 
@@ -105,34 +119,80 @@ exports.newConversation = function(req, res, next) {
     return next();
   }
 
-  const conversation = new Conversation({
-    participants: [req.user._id, req.params.recipient]
-  });
-
-  conversation.save(function(err, newConversation) {
-    if (err) {
-      res.send({ error: err });
-      return next(err);
-    }
-    
-    const message = new Message({
-      conversationId: newConversation._id.toString(),
-      body: req.body.composedMessage,
-      author: req.user._id
-    });
-
-    message.save(function(err, newMessage) {
+  //check if there exists a conversation between two clients
+  Conversation.find({ participants: req.user._id })
+    .select('_id')
+    .exec(function(err, conversations) {
       if (err) {
         res.send({ error: err });
         return next(err);
       }
-      //after successfully saving a new message, redirect to that conversation page
-      res.redirect('/chat/'+conversation.id.toString());
-      //res.status(200).json({ message: 'Conversation started!', conversationId: conversation._id });
-      //return next();
+      if(conversations.length!=0) {
+        var length = conversations.length-1;
+        conversations.forEach((convo)=>{
+          length--;
+          var temp = [req.user._id, req.params.recipient];
+          if(convo.participants === temp){
+            res.redirect('/chat/', convo._id);
+          }
+          if(length == 0){  //there does not exist a conversation between these two participants
+            const conversation = new Conversation({
+              participants: [req.user._id, req.params.recipient]
+            });
+
+            conversation.save(function(err, newConversation) {
+              if (err) {
+                res.send({ error: err });
+                return next(err);
+              }
+              
+              const message = new Message({
+                conversationId: newConversation._id.toString(),
+                body: req.body.composedMessage,
+                author: req.user._id
+              });
+
+              message.save(function(err, newMessage) {
+                if (err) {
+                  res.send({ error: err });
+                  return next(err);
+                }
+                //TODO: redirect to conversation page or stay where the user is?
+                res.redirect('/chat/'+conversation.id.toString());
+              });
+            });
+          }
+        });
+      }else{
+        const conversation = new Conversation({
+          participants: [req.user._id, req.params.recipient]
+        });
+
+        conversation.save(function(err, newConversation) {
+          if (err) {
+            res.send({ error: err });
+            return next(err);
+          }
+          
+          const message = new Message({
+            conversationId: newConversation._id.toString(),
+            body: req.body.composedMessage,
+            author: req.user._id
+          });
+
+          message.save(function(err, newMessage) {
+            if (err) {
+              res.send({ error: err });
+              return next(err);
+            }
+            //TODO: redirect to conversation page or stay where the user is?
+            res.redirect('/chat/'+conversation.id.toString());
+          });
+        });
+      }
     });
-  });
 }
+
 
 exports.sendReply = function(req, res, next) {  
   console.log('in send reply');

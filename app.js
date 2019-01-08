@@ -96,7 +96,7 @@ app.use(flash());
 
 
 app.post('/register', passportConfig.isAuthenticated, upload.single('myFile'), userController.postRegister);
-app.post('/account/dashboard', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
+app.post('/account', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
 app.post('/chat/:conversationId', chatController.sendReply);        //send reply in a conversation
 app.post('/chat/:conversationId/add', chatController.addMember);
 
@@ -155,11 +155,11 @@ io.on('connection', function(socket){
     //console.log('left ' + conversation);
   });
 
-  socket.on('new message', (message, conversation) => {
+  socket.on('new message', (sender,message, conversation) => {
     /*console.log("new message received:");
     console.log(message);
     console.log(conversation);*/
-    io.to(conversation).emit('new message', message);
+    io.to(conversation).emit('new message', sender, message);
   });
 
   socket.on('disconnect', () => {

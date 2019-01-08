@@ -726,14 +726,14 @@ exports.getUser = (req, res) => {
   console.log(req.params.id);
   if(req.user && req.params.id == req.user.email){
     res.render('account/dashboard',{
-      title:'Account Management', user: req.user
+      title:'Account Management', Profile: req.user
     })
-  }
-  User.findOne({"email": req.params.id}, (err, user) => {
-    if(err){throw err;}
-    console.log(user);
-    res.render('account/profile', {
-      title: 'Account Management', user:user
+  }else{
+    User.findOne({"email": req.params.id}, (err, user) => {
+      if(err){throw err;}
+      res.render('account/profile', {
+        title: 'Account Management', Profile:user
+      });
     });
-  });
+  }
 };

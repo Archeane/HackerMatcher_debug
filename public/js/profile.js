@@ -1,5 +1,7 @@
 console.log(User);
 
+$('#startChat').attr('action', '/new/'+User._id);
+
 //----------------------about-----------------------
 $('#pfp').attr('src', User.profile.picture);
 $('#name').text(User.profile.name || '');
