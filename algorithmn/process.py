@@ -23,6 +23,8 @@ def calculatecarescores(hacker):
 def calculatecategoryscore(currentHacker, carescores, hacker, category):
     #print(currentHacker['preferences'][category])
     #print(hacker['preferences'][category])
+    if not hasattr(currentHacker['prefences'], category) and hasattr(hacker['preferences', category]):
+        return 0
     arr1 = currentHacker['preferences'][category]
     arr2 = hacker['preferences'][category]
     multiplier = carescores[category]
@@ -49,6 +51,9 @@ def calculatehackerscore(currentHacker, carescores, hacker):
 
 def calculateallscores(currentHacker, allHackers):
     totalscores = []
+    # checking if current hacker contains all the needed fields
+    if hasattr(currentHacker, 'careScores') && hasattr(currentHacker, 'preferences')
+        return []
     carescores = calculatecarescores(currentHacker)
     #print(calculatehackerscore(currentHacker, carescores, allHackers[13]))
 

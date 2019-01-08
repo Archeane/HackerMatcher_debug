@@ -37,7 +37,7 @@ const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
 const hackathonController = require('./controllers/hackathon.js');
-
+const chatController = require('./controllers/chat.js');
 
 /**
  * API keys and Passport configuration.
@@ -97,6 +97,9 @@ app.use(flash());
 
 app.post('/register', passportConfig.isAuthenticated, upload.single('myFile'), userController.postRegister);
 app.post('/account/dashboard', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
+app.post('/chat/:conversationId', chatController.sendReply);        //send reply in a conversation
+app.post('/chat/:conversationId/add', chatController.addMember);
+
 
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
@@ -137,17 +140,38 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
 //-----------------CHAT TESTING AREA------------------
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-app.get('/chat', homeController.getChat);
 
 io.on('connection', function(socket){
   console.log('a user connected');
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+  socket.on('enter conversation', (conversation) => {
+    socket.join(conversation);
+    /*//get the conversation room 
+    var room = io.sockets.adapter.rooms[conversation];
+    console.log(room.length);
+    console.log(room);*/
   });
-  socket.on('disconnect', function(){
+  socket.on('leave conversation', (conversation) => {
+    socket.leave(conversation);
+    //console.log('left ' + conversation);
+  });
+
+  socket.on('new message', (message, conversation) => {
+    /*console.log("new message received:");
+    console.log(message);
+    console.log(conversation);*/
+    io.to(conversation).emit('new message', message);
+  });
+
+  socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 });
+
+//app.get('/chat', chatController.chat);
+app.get('/chat', chatController.getConversations);
+app.get('/chat/:conversationID', chatController.getConversation);
+
+app.post('/new/:recipient', chatController.newConversation);       //start a new conversation
 
 
 

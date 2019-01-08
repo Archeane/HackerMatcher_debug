@@ -1,23 +1,18 @@
 extends layout
 
 block content
+    //TODO: populate form with a users search bar 
+    <form id="addMemberForm">
+        <input id="newMember" />
+        <button type="submit">Add to Group</button>
+    </form>
+
     <ul id="messages"></ul>
-    <form action="">
+    <form id="messageForm" method="POST">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/js/lib/socket.io.js"></script>
+    <script src="/js/chat.js"></script>
     script.
-      $(function () {
-        var socket = io();
-        $('form').submit(function(e){
-          e.preventDefault(); // prevents page reloading
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-  
+        var Messages = !{JSON.stringify(messages)};
+        console.log(Messages);
