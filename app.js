@@ -99,7 +99,7 @@ app.post('/register', passportConfig.isAuthenticated, upload.single('myFile'), u
 app.post('/account', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
 app.post('/chat/:conversationId', chatController.sendReply);        //send reply in a conversation
 app.post('/chat/:conversationId/add', chatController.addMember);
-
+app.post('/chat', chatController.getConversations);
 
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
@@ -168,7 +168,7 @@ io.on('connection', function(socket){
 });
 
 //app.get('/chat', chatController.chat);
-app.get('/chat', chatController.getConversations);
+//app.get('/chat', chatController.getConversations);
 app.get('/chat/:conversationID', chatController.getConversation);
 
 app.post('/new/:recipient', chatController.newConversation);       //start a new conversation

@@ -4,41 +4,72 @@ const Conversation = require('../models/Conversation'),
       User = require('../models/User');
 
 
-exports.getConversations = function(req, res, next) {  
-  // Only return one message from each conversation to display as snippet
-  Conversation.find({ participants: req.user._id })
-    .select('_id')
-    .exec(function(err, conversations) {
-      if (err) {
-        res.send({ error: err });
-        return next(err);
-      }
-      if(conversations.length===0) {
-        return res.status(200).json({ message: "No conversations yet" });
-      }
-
-      // Set up empty array to hold conversations + most recent message
-      let fullConversations = [];
-      conversations.forEach(function(conversation) {
-        Message.find({ 'conversationId': conversation._id })
-          .sort('-createdAt')
-          .limit(1)
-          .populate({
-            path: "author",
-            select: "profile.firstName profile.lastName"
-          })
-          .exec(function(err, message) {
-            if (err) {
-              res.send({ error: err });
-              return next(err);
+exports.getConversations = async function(req, res, next){
+  try{  
+    let conversations = await Conversation.find({participants: req.user._id });
+    if(conversations.length===0) {
+      return res.status(200).json({ message: "No conversations yet" });
+    }else{
+      let conversationPics = {};
+      for(const conversation of conversations){
+        if(conversation.participants.length == 2){
+          var otherPersonIndex = 1;
+          if(!(conversation.participants[otherPersonIndex].toString() === req.user._id.toString())){//toggle index of participant that is not user
+            otherPersonIndex = 0;
+          }
+          try{
+            let user = await User.findOne({"_id": conversation.participants[otherPersonIndex]});
+            if(user.profile.picture){
+              conversationPics[conversation._id] = user.profile.picture;
+            }else{
+              conversationPics[conversation._id] = conversation.image;
             }
-            fullConversations.push(message);
-            if(fullConversations.length === conversations.length) {
-              return res.status(200).json({ conversations: fullConversations });
+          }catch(err){throw err;}
+        }else{
+          conversationPics[conversation._id] = conversation.image;
+        }
+      }
+      res.status(200).send(conversationPics);
+      console.log(conversationPics);
+    }
+  }catch(err){throw err;}
+  
+  /*
+  // Only return one message from each conversation to display as snippet
+  Conversation.find({ participants: req.user._id }, (err, conversations)=>{
+    if (err) {
+      res.send({ error: err });
+      return next(err);
+    }
+    if(conversations.length===0) {
+      return res.status(200).json({ message: "No conversations yet" });
+    }else{
+      conversations.forEach((conversation)=>{
+        length--;
+        if(conversation.participants.length == 2){  //a private chat, send other person's profile image
+          console.log("private conversation");
+          var otherPersonIndex = 0;
+          if(!conversation.participants[otherPersonIndex].toString() === req.user._id.toString()){
+            otherPersonIndex = 1;
+          }
+          console.log(otherPersonIndex);
+          await User.findOne({"_id": conversation.participants[otherPersonIndex]}, (err, user)=>{
+            if(err){throw err;}
+            if(user.profile.picture){
+              conversationPics[conversation._id] = user.profile.picture;
+            }else{
+              conversationPics[conversation._id] = conversation.image;
             }
           });
+        }else{
+          conversationPics[conversation._id] = conversation.image;
+        }
       });
-  });
+      console.log(conversations);
+          console.log(conversationPics);
+      
+    }
+  });*/
 }
 
 exports.getConversation = function(req, res, next) { 
@@ -107,8 +138,6 @@ exports.getConversation = function(req, res, next) {
  *  3. a new message is created with z's id and what x has written
  */
 exports.newConversation = function(req, res, next) { 
-  console.log(req.params);
-  console.log(req.params.recipient); 
   if(!req.params.recipient) {
     res.status(422).send({ error: 'Please choose a valid recipient for your message.' });
     return next();
@@ -121,23 +150,28 @@ exports.newConversation = function(req, res, next) {
 
   //check if there exists a conversation between two clients
   Conversation.find({ participants: req.user._id })
-    .select('_id')
     .exec(function(err, conversations) {
       if (err) {
         res.send({ error: err });
         return next(err);
       }
       if(conversations.length!=0) {
-        var length = conversations.length-1;
+        var length = conversations.length;
         conversations.forEach((convo)=>{
           length--;
-          var temp = [req.user._id, req.params.recipient];
-          if(convo.participants === temp){
-            res.redirect('/chat/', convo._id);
-          }
-          if(length == 0){  //there does not exist a conversation between these two participants
+          var temp = [req.user._id, req.params.recipient].sort().toString();
+          var temp2 = convo.participants.sort().toString();
+          if(temp === temp2){
+            console.log("redirecting!!!", length);
+            //TODO: this doesnt add the newly composed message to the chat
+            res.redirect('/chat/'+convo._id);
+          }else if(length == 0){  //there does not exist a conversation between these two participants
+            console.log("creating new convo", length);
+            //TODO: this way of obtaining image does not work 
+            var img = require('../public/assets/add_conversation_image.png')
             const conversation = new Conversation({
-              participants: [req.user._id, req.params.recipient]
+              participants: [req.user._id, req.params.recipient],
+              image: img
             });
 
             conversation.save(function(err, newConversation) {
@@ -160,12 +194,14 @@ exports.newConversation = function(req, res, next) {
                 //TODO: redirect to conversation page or stay where the user is?
                 res.redirect('/chat/'+conversation.id.toString());
               });
-            });
+            });//end of conversation.save
           }
         });
       }else{
+        var img = require('../public/assets/add_conversation_image.png')
         const conversation = new Conversation({
-          participants: [req.user._id, req.params.recipient]
+          participants: [req.user._id, req.params.recipient],
+          image: img
         });
 
         conversation.save(function(err, newConversation) {
@@ -188,15 +224,14 @@ exports.newConversation = function(req, res, next) {
             //TODO: redirect to conversation page or stay where the user is?
             res.redirect('/chat/'+conversation.id.toString());
           });
-        });
-      }
+        });//end of conversation.save
+       
+      }//end of else
     });
 }
 
 
 exports.sendReply = function(req, res, next) {  
-  console.log('in send reply');
-  console.log(req.body);
   const reply = new Message({
     conversationId: req.params.conversationId,
     body: req.body.msg,

@@ -19,6 +19,8 @@ html
     script(src='/js/main.js')
 
     include partials/header
+    include partials/conversations
+
 
     .container
       include partials/flash
@@ -26,6 +28,7 @@ html
 
     include partials/footer
 
+    script(src="/js/conversations.js")
   
     block head
       script(src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js")
