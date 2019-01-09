@@ -100,6 +100,9 @@ app.post('/account', passportConfig.isAuthenticated, upload.single('myFile'), us
 app.post('/chat/:conversationId', chatController.sendReply);        //send reply in a conversation
 app.post('/chat/:conversationId/add', chatController.addMember);
 app.post('/chat', chatController.getConversations);
+app.post('/search/:query', homeController.search);
+app.post('/search', homeController.autoSearch);
+
 
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
