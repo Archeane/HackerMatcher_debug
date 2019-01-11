@@ -1,6 +1,8 @@
-exports.index = (req, res) => {
+exports.index = async (req, res) => {
+  const Hackathon = require('../models/Hackathon');
+  var hackathons = await Hackathon.find();
   res.render('home', {
-    title: 'Home'
+    title: 'Home', hackathons: hackathons
   });
 };
 
@@ -16,14 +18,12 @@ exports.getChat = (req, res) =>{
 
 
 exports.search = (req, res, next)=>{
-	console.log('in search');
-	console.log(req.params);
+	//console.log(req.params);
 	var query = req.params.query;
 	var p1 = new Promise((res, rej) =>{
 		const User = require('../models/User');
 		User.find({ "email": { $regex: query, $options:"i m"}}, (err, docs)=>{
 			if(err) throw err;
-			//console.log('docs:',docs);
 			res(docs);
 		});
 	});
@@ -37,17 +37,15 @@ exports.search = (req, res, next)=>{
 	});
 
 	Promise.all([p1,p2]).then((values)=>{
-		console.log('result:', values);
+		//console.log('result:', values);
 		res.status(200).send(values);
 	});
 	
 };
 
 exports.autoSearch = (req, res, next)=>{
-	console.log('auto search!!');
-	console.log(req.body);
+	//console.log(req.body);
 	var query = req.body.query;
-	console.log(query);
 	var p1 = new Promise((res, rej) =>{
 		const User = require('../models/User');
 		User.find({ "email": { $regex: query, $options:"i m"}}, (err, docs)=>{
@@ -66,7 +64,7 @@ exports.autoSearch = (req, res, next)=>{
 	});
 
 	Promise.all([p1,p2]).then((values)=>{
-		console.log('result:', values);
+		//console.log('result:', values);
 		res.status(200).send(values);
 	});
 };

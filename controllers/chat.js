@@ -8,7 +8,7 @@ exports.getConversations = async function(req, res, next){
   try{  
     let conversations = await Conversation.find({participants: req.user._id });
     if(conversations.length===0) {
-      return res.status(200).json({ message: "No conversations yet" });
+      return res.status(404);
     }else{
       let conversationPics = {};
       for(const conversation of conversations){
@@ -33,43 +33,6 @@ exports.getConversations = async function(req, res, next){
       console.log(conversationPics);
     }
   }catch(err){throw err;}
-  
-  /*
-  // Only return one message from each conversation to display as snippet
-  Conversation.find({ participants: req.user._id }, (err, conversations)=>{
-    if (err) {
-      res.send({ error: err });
-      return next(err);
-    }
-    if(conversations.length===0) {
-      return res.status(200).json({ message: "No conversations yet" });
-    }else{
-      conversations.forEach((conversation)=>{
-        length--;
-        if(conversation.participants.length == 2){  //a private chat, send other person's profile image
-          console.log("private conversation");
-          var otherPersonIndex = 0;
-          if(!conversation.participants[otherPersonIndex].toString() === req.user._id.toString()){
-            otherPersonIndex = 1;
-          }
-          console.log(otherPersonIndex);
-          await User.findOne({"_id": conversation.participants[otherPersonIndex]}, (err, user)=>{
-            if(err){throw err;}
-            if(user.profile.picture){
-              conversationPics[conversation._id] = user.profile.picture;
-            }else{
-              conversationPics[conversation._id] = conversation.image;
-            }
-          });
-        }else{
-          conversationPics[conversation._id] = conversation.image;
-        }
-      });
-      console.log(conversations);
-          console.log(conversationPics);
-      
-    }
-  });*/
 }
 
 exports.getConversation = function(req, res, next) { 
@@ -142,11 +105,13 @@ exports.newConversation = function(req, res, next) {
     res.status(422).send({ error: 'Please choose a valid recipient for your message.' });
     return next();
   }
-
   if(!req.body.composedMessage) {
     res.status(422).send({ error: 'Please enter a message.' });
     return next();
   }
+  //Verify user - Gender, school, major, gradyear, edulevel must be filled out
+  var validated = false;
+
 
   //check if there exists a conversation between two clients
   Conversation.find({ participants: req.user._id })

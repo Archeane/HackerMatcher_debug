@@ -97,9 +97,9 @@ app.use(flash());
 
 app.post('/register', passportConfig.isAuthenticated, upload.single('myFile'), userController.postRegister);
 app.post('/account', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
-app.post('/chat/:conversationId', chatController.sendReply);        //send reply in a conversation
-app.post('/chat/:conversationId/add', chatController.addMember);
-app.post('/chat', chatController.getConversations);
+app.post('/chat/:conversationId', passportConfig.isAuthenticated, chatController.sendReply);        //send reply in a conversation
+app.post('/chat/:conversationId/add', passportConfig.isAuthenticated, chatController.addMember);
+app.post('/chat', passportConfig.isAuthenticated, chatController.getConversations);
 app.post('/search/:query', homeController.search);
 app.post('/search', homeController.autoSearch);
 
@@ -173,7 +173,6 @@ io.on('connection', function(socket){
 //app.get('/chat', chatController.chat);
 //app.get('/chat', chatController.getConversations);
 app.get('/chat/:conversationID', chatController.getConversation);
-
 app.post('/new/:recipient', chatController.newConversation);       //start a new conversation
 
 
@@ -202,7 +201,7 @@ app.post('/reset/:token', userController.postReset);
 //app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
 
-app.get('/register', passportConfig.isAuthenticated, userController.getRegister);
+app.get('/register', userController.getRegister);
 
 app.get('/preferences', passportConfig.isAuthenticated, userController.getPreferences);
 app.post('/preferences', passportConfig.isAuthenticated, userController.postPreferences);

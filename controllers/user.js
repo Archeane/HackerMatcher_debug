@@ -6,9 +6,6 @@
  * 
  */
 
-
-
-
 const { promisify } = require('util');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -17,11 +14,9 @@ const User = require('../models/User');
 const fs = require('fs');
 
 const randomstring = require('randomstring');
-
 const randomBytesAsync = promisify(crypto.randomBytes);
 
 const { Storage } = require('@google-cloud/storage');
-
 var storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_STORAGE_PROJECT_ID,
   keyFilename: process.env.GOOGLE_CLOUD_STORAGE_KEYFILE_NAME
@@ -48,19 +43,19 @@ exports.postLogin = (req, res, next) => {
   if (errors) {
     req.flash('errors', errors);
     // TODO: redirect to re login page
-    return res.redirect('/login');
+    return res.redirect('/');
   }
 
   passport.authenticate('local', (err, user, info) => {
     if (err) { return next(err); }
     if (!user) {
       req.flash('errors', info);
-      return res.redirect('/login');
+      return res.redirect('/');
     }
     req.logIn(user, (err) => {
       if (err) { return next(err); }
-      req.flash('success', { msg: 'Success! You are logged in.' });
-      res.redirect(req.session.returnTo || '/');
+      //req.flash('success', { msg: 'Success! You are logged in.' });
+      res.redirect('/home');
     });
   })(req, res, next);
 };
@@ -92,13 +87,10 @@ exports.getSignup = (req, res) => {
 
 //TODO: 
 // 1. node mailer -> do verification step
+// 2. Add a default random profile image for the user
 exports.postSignup = (req, res, next) => {
-  //TODO: add or delete validity check
-  /*
-  req.assert('firstName', 'Must fill in first name').isEmpty();
-  req.assert('lastName', 'Must fill in last name').isEmpty();
   req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
+  req.assert('password', 'Password must be at least 8 characters long').len(8);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
   req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
 
@@ -106,9 +98,8 @@ exports.postSignup = (req, res, next) => {
 
   if (errors) {
     req.flash('errors', errors);
-    return res.redirect('/signup');
+    return res.redirect('/');
   }
-  */
   const secretToken = randomstring.generate();
   var confirmurl = process.env.BASE_URL+'/verifyemail?token='+secretToken;
   const user = new User({
@@ -118,6 +109,8 @@ exports.postSignup = (req, res, next) => {
     emailVerified: false
   });
 
+  user.profile.picture = 'http://cameronmcefee.com/img/work/the-octocat/codercat.jpg';
+
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
@@ -126,11 +119,10 @@ exports.postSignup = (req, res, next) => {
     }
 
     //TODO: send email with verification code
-    
     user.save((err) => {
       if (err) { return next(err); }
 
-       //TODO: redirect to verify email page
+        //TODO: redirect to verify email page
         //1. Send email 
         //2. User clicks on verify email link 
         //3. activiate user in database
@@ -185,10 +177,15 @@ exports.postRegister = (req, res) => {
     if (err){return next(err);}
     
     user.profile.gender=req.body.gender || '';
+    if(req.body.gender == 'female'){
+      user.profile.picture = 'https://i.pinimg.com/originals/9d/4d/31/9d4d314ec7722d05541111a180e4e54b.png';
+    }
+
     user.profile.school=req.body.school || '';
     user.profile.major=req.body.major ||'';
     user.profile.graduationYear=req.body.gradYear || '';
-    user.profile.educationLevel=req.body.edulevel || '';
+    user.profile.educationLevel=req.body.eduLevel || '';
+    user.numOfHackathons = req.body.numOfHackathons || -1;
 
     //--------------------preferences---------------------------
 
@@ -269,7 +266,16 @@ exports.postRegister = (req, res) => {
               custom: 'metadata'
             }
           }
-      })).on('error', function(err) {console.log(err);})
+      })).on('error', function(err) {
+        console.log(err);
+        //still save the user
+        user.save((err)=>{
+          if(err){return next(err);}
+          //TODO: Inform the user pfp is not saved but other information is saved
+          req.flash('errors', {msg: 'An error has occured with the server. Your profile image was not saved, but your other information has been saved.'});
+          res.redirect('/home');
+        })
+      })
       .on('finish', function() {
           myBucket.file(gcsname).makePublic().then(() =>{
             console.log('upload to gcloud success!', getPublicUrl(gcsname));
@@ -285,7 +291,7 @@ exports.postRegister = (req, res) => {
                 return next(err);
               }
               req.flash('success', { msg: 'Profile information has been updated.' });
-              res.redirect('/account')
+              res.redirect('/home')
             });
           });
         });
@@ -300,11 +306,10 @@ exports.postRegister = (req, res) => {
           return next(err);
         }
         req.flash('success', { msg: 'Profile information has been updated.' });
-        res.redirect('/account')
+        res.redirect('/home')
       });
     }
 
-   
   });
 }
 

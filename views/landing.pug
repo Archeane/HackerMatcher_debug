@@ -1,6 +1,6 @@
 extends layout
 
-block append head
+block append css
 	link(rel='stylesheet', href='/css/landing.css')
 
 block content
@@ -18,7 +18,7 @@ block content
 				.form-group
 				input.form-control(type="password", name="password", id='reg-password',placeholder="Password",required)
 				.form-group
-				input.form-control(type="password", name="confirmpassword", id='reg-confirmpassword',placeholder="Confirm Password",required)
+				input.form-control(type="password", name="confirmPassword", id='reg-confirmpassword',placeholder="Confirm Password",required)
 				.form-group.offset-sm-3.col-md-7.pl-2
 				button.btn.btn-success(type='submit' id="submitRegister")
 					i.fas.fa-user-plus
