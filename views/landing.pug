@@ -5,22 +5,31 @@ block append css
 
 block content
 	div#register-box
-		div.center
-			form(action='/signup', method='POST', id="signupForm")
-				input(type='hidden', name='_csrf', value=_csrf)
-				#error(style="background: red; color: #fff; width: 80%; display:none;padding:5px;")
-				.form-group
-				input.form-control(type="text", name="firstname", id='reg-firstname',placeholder="First Name",required)
-				.form-group
-				input.form-control(type="text", name="lastname", id='reg-lastname',placeholder="Last Name",required)
-				.form-group
-				input.form-control(type="text", name="email", id='reg-email',placeholder="Email",required)
-				.form-group
-				input.form-control(type="password", name="password", id='reg-password',placeholder="Password",required)
-				.form-group
-				input.form-control(type="password", name="confirmPassword", id='reg-confirmpassword',placeholder="Confirm Password",required)
-				.form-group.offset-sm-3.col-md-7.pl-2
-				button.btn.btn-success(type='submit' id="submitRegister")
-					i.fas.fa-user-plus
-						| Signup
+		h1#title
+			| Sign Up
+		form(action='/signup', method='POST', id="signupForm")
+			input(type='hidden', name='_csrf', value=_csrf)
+			#error(style="background: red; color: #fff; width: 80%; display:none;padding:5px;")
+			.form-group
+			input.form-control(type="text", name="firstname", id='reg-firstname',placeholder="First Name",required)
+			.form-group
+			input.form-control(type="text", name="lastname", id='reg-lastname',placeholder="Last Name",required)
+			.form-group
+			input.form-control(type="text", name="email", id='reg-email',placeholder="Email",required)
+			.form-group
+			input.form-control(type="password", name="password", id='reg-password',placeholder="Password",required)
+			.form-group
+			input.form-control(type="password", name="confirmpassword", id='reg-confirmpassword',placeholder="Confirm Password",required)
+			.form-group.offset-sm-3.col-md-7.pl-2
+			button.btn.btn-success(type='submit' id="submitRegister")
+				i.fas.fa-user-plus
+					| Register
+	
+	div#about-box
+		div.center 
+			h1
+				| HackerMatcher
+			h2
+				| Meet your perfect team
+
 	

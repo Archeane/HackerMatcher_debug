@@ -1,3 +1,27 @@
-body{
-	font-family: "Times New Roman", Times, serif;
+#register-box{
+    border:1px solid black;
+    width: 50%;
+    margin: 0 auto;
+    padding: 2%;
+    margin-top: 5%; 
+    display: inline-block;
+    float: right;
+}
+
+#submitRegister{
+    display: block;
+    margin: 0 auto;
+}
+
+#title{
+    text-align: center;
+}
+
+#about-box{
+    margin: 1%;
+    margin-top: 15%; 
+    margin-left: 10%;
+    float: left;
+    display: inline;
+    margin-right: 5px;
 }
