@@ -10,7 +10,7 @@ $('#editProfile').on('click', (event)=>{
 });
 
 
-//----------------------about-----------------------
+//----------------------about content-----------------------
 $('#pfp').attr('src', User.profile.picture);
 $('#name').text(User.profile.name || '');
 $('#gender').text(User.profile.gender || '');
@@ -33,18 +33,25 @@ for (var key in User.socialmedia){
 }
 
 socialmedia = new Vue({
-	el: "#about",
+	el: "#socialmedia-app",
 	data:{
 		socialmedias: socialmedias
 	}
 });
 
 //-------------------preferences---------------------
+//If user does not have any preferences, set that field to []
+console.log(User.preferences);
+console.log(!User.preferences.interests);
+console.log(User.preferences.interests);
+console.log(User.preferences.interests.length == 0);
+
 ints = [];
+allInts=[];
+
 for(i = 0; i < User.preferences.interests.length; i++){
 	ints.push(User.preferences.interests[i][0]);
 }
-allInts=[];
 $.getJSON('/assets/interests.json', (data) =>{
 	for (i = 0; i < data.length; i++){
 		if(!ints.includes(data[i]['name'])){
@@ -103,6 +110,7 @@ app = new Vue({
 		allInterests: allInts,
 		allTechnologies: allTechs,
 		allLanguages: allLanguages
+
 	},
 	computed:{
 		totalLanguages(){
@@ -176,7 +184,7 @@ app = new Vue({
 
 
 /**
- *================================SETTINGS===================================== 
+ *================================ABOUT===================================== 
  */
 
 //display chosen picture in frame

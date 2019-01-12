@@ -22,7 +22,7 @@ block content
 
   form(action='/account', method='POST')
     input(type='hidden', name='_csrf', value=_csrf)
-    <div id="about">
+    <div id="about">   
       .content
         <span id="name"></span>
         <span id="gender"></span>
@@ -61,56 +61,58 @@ block content
           <option value="graduate">Graduate</option>
           <option value="phd">PhD</option>
         </select>
-      
-      //TODO: specific class for devpost, website, phone
-      .content
-        <li v-for="(socialmedia, index) in socialmedias">
-          <a v-bind:class="[{'fab': true}, socialmedia[0] ? 'fa-' + socialmedia[0] : '']"v-bind:value="socialmedia[1]"></a>
-        </li>
-      .settings
-        <div class="row">
-          <div class="col-md-4">
-            <label>Website:</label>
+      <div id="socialmedia-app">
+        .content
+          <li v-for="(socialmedia, index) in socialmedias">
+            <a v-if="socialmedia[0] == 'phone'" v-bind:value="socialmedia[1]" ><i class="fas fa-mobile"></i></a>
+            <a v-if="socialmedia[0] == 'devpost'" v-bind:href="socialmedia[1]"><img src="/assets/devpost.png" height=30 /></a>
+            <a v-if="socialmedia[0] == 'website'" v-bind:href="socialmedia[1]"><i class="fab fa-blogger"></i></a>
+            <a v-else v-bind:href="socialmedia[1]"><i v-bind:class="[{'fab': true}, socialmedia[0] ? 'fa-' + socialmedia[0] : '']"></i></a>
+          </li>
+        .settings
+          <div class="row">
+            <div class="col-md-4">
+              <label>Website:</label>
+            </div>
+            <input class="pull-right" name="website" placeholder="Personal Website" />
           </div>
-          <input class="pull-right" name="website" placeholder="Personal Website" />
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <label>Devpost:</label>
+          <div class="row">
+            <div class="col-md-4">
+              <label>Devpost:</label>
+            </div>
+            <input class="pull-right" name="devpost" placeholder="Devpost" />
           </div>
-          <input class="pull-right" name="devpost" placeholder="Devpost" />
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <label>Phone:</label>
+          <div class="row">
+            <div class="col-md-4">
+              <label>Phone:</label>
+            </div>
+            <input class="pull-right" name="phone" placeholder="Phone" />
           </div>
-          <input class="pull-right" name="phone" placeholder="Phone" />
-        </div>
-        <div class="row">
-          <div class="col-md-3" style="margin-left: -12px;">
-            <label>Facebook:</label>
+          <div class="row">
+            <div class="col-md-3" style="margin-left: -12px;">
+              <label>Facebook:</label>
+            </div>
+            <input style="width:70%;" name="facebook" placeholder="https://www.facebook.com/your_name" />
           </div>
-          <input style="width:70%;" name="facebook" placeholder="https://www.facebook.com/your_name" />
-        </div>
-        <div class="row">
-          <div class="col-md-3" style="margin-left: -12px;">
-            <label>Instagram:</label>
+          <div class="row">
+            <div class="col-md-3" style="margin-left: -12px;">
+              <label>Instagram:</label>
+            </div>
+            <input style="width:70%;" name="instagram" placeholder="https://www.instagram.com/your_name" />
           </div>
-          <input style="width:70%;" name="instagram" placeholder="https://www.instagram.com/your_name" />
-        </div>
-        <div class="row">
-          <div class="col-md-3" style="margin-left: -12px;">
-            <label>Linkedin:</label>
+          <div class="row">
+            <div class="col-md-3" style="margin-left: -12px;">
+              <label>Linkedin:</label>
+            </div>
+            <input style="width:70%;" name="linkedin" placeholder="https://www.linkedin.com/your_name" />
           </div>
-          <input style="width:70%;" name="linkedin" placeholder="https://www.linkedin.com/your_name" />
-        </div>
-        <div class="row">
-          <div class="col-md-3" style="margin-left: -12px;">
-            <label>Github:</label>
+          <div class="row">
+            <div class="col-md-3" style="margin-left: -12px;">
+              <label>Github:</label>
+            </div>
+            <input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
           </div>
-          <input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
-        </div>
-    
+      </div>
     
     <div id="app">
       .content
@@ -125,6 +127,7 @@ block content
         </div>
         <button v-on:click.prevent v-if="totalLanguages < 5" data-toggle="modal" data-target="#modalLanguages" style="border-radius: 0px; border-width: 1px; text-align:center">
           <i class="fa fa-plus"></i> add</button>
+
         <div class="modal fade" id="modalLanguages" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content" style="color:dimgrey;">
@@ -145,7 +148,7 @@ block content
             </div>
           </div>
         </div>
-
+    
       .content
         <div class="interests" v-for="(interest, index) in interests">
           <span style="float:right">{{interest[1]}}/10</span>

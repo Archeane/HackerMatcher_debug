@@ -4,8 +4,7 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017')
 db = client['test']
 
-#currentHacker = db['users'].find_one({'email':'f@f.com'})
-#allHackers = db['users'].find()
+
 
 def calculatecarescores(hacker):
     interestscore = hacker['careScores']['interests']
@@ -23,8 +22,10 @@ def calculatecarescores(hacker):
 def calculatecategoryscore(currentHacker, carescores, hacker, category):
     #print(currentHacker['preferences'][category])
     #print(hacker['preferences'][category])
-    if not hasattr(currentHacker['prefences'], category) and hasattr(hacker['preferences', category]):
-        return 0
+    # TODO: handle when hacker does not have this cateorgy
+    #if not(hasattr(currentHacker['preferences'], category) or hasattr(hacker['preferences', category])):
+    #    return 0
+
     arr1 = currentHacker['preferences'][category]
     arr2 = hacker['preferences'][category]
     multiplier = carescores[category]
@@ -42,17 +43,25 @@ def calculatecategoryscore(currentHacker, carescores, hacker, category):
     return scoresum
 
 def calculatehackerscore(currentHacker, carescores, hacker):
-    interestscore = calculatecategoryscore(currentHacker, carescores, hacker, 'interests')
-    languagescore = calculatecategoryscore(currentHacker, carescores, hacker, 'languages')
-    technologiesscore = calculatecategoryscore(currentHacker, carescores, hacker, 'technologies')
-    fieldsscore = calculatecategoryscore(currentHacker, carescores, hacker, 'fields')
+    interestscore = 0
+    languagescore = 0
+    technologiesscore = 0
+    fieldsscore = 0
+    if(len(currentHacker['preferences']['interests']) != 0 or carescores['interests'] == 0):
+        interestscore = calculatecategoryscore(currentHacker, carescores, hacker, 'interests')
+    if (len(currentHacker['preferences']['languages']) != 0 or carescores['languages'] == 0):
+        languagescore = calculatecategoryscore(currentHacker, carescores, hacker, 'languages')
+    if (len(currentHacker['preferences']['technologies']) != 0 or carescores['technologies'] == 0):
+        technologiesscore = calculatecategoryscore(currentHacker, carescores, hacker, 'technologies')
+    if (len(currentHacker['preferences']['fields']) != 0 or carescores['fields'] == 0):
+        fieldsscore = calculatecategoryscore(currentHacker, carescores, hacker, 'fields')
     return interestscore + languagescore + technologiesscore + fieldsscore
 
 
 def calculateallscores(currentHacker, allHackers):
     totalscores = []
     # checking if current hacker contains all the needed fields
-    if hasattr(currentHacker, 'careScores') && hasattr(currentHacker, 'preferences')
+    if hasattr(currentHacker, 'careScores') and hasattr(currentHacker, 'preferences'):
         return []
     carescores = calculatecarescores(currentHacker)
     #print(calculatehackerscore(currentHacker, carescores, allHackers[13]))
@@ -70,10 +79,17 @@ def calculateallscores(currentHacker, allHackers):
 class HelloRPC(object):
     def hello(self, user, hackathon):
         currentHacker = db['users'].find_one({'email':user})
-        currentHackathon = db['hackathons'].find_one({'name': hackathon})
-        #TODO: get hackathon hackers from database
-        allHackers = db['users'].find()
+        #currentHackathon = db['hackathons'].find_one({'name': hackathon})
+        allHackersEmail = db['hackathons'].find_one({'name': hackathon})
+        allHackersEmail = allHackersEmail['hackers']
+        allHackers = []
+        for email in allHackersEmail:
+            hacker = db['users'].find_one({'email': email})
+            if hacker != None:
+                allHackers.append(hacker)
+        print(allHackers)
         arr = calculateallscores(currentHacker, allHackers)
+        print(arr)
         return arr
 
 s = zerorpc.Server(HelloRPC())

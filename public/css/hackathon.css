@@ -1,0 +1,27 @@
+.img__wrap {
+  position: relative;
+}
+
+.img__description {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 120px;
+  background: #696969;
+  color: #fff;
+  visibility: hidden;
+  opacity: 0;
+  border-radius: 40%;
+  /* transition effect. not necessary */
+  transition: opacity .2s, visibility .2s;
+}
+
+.img__wrap:hover .img__description {
+  visibility: visible;
+  opacity: 0.7;
+}
+
+.img__wrap img{
+  height: 120px;
+  border-radius: 50%;
+}

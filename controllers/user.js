@@ -216,7 +216,7 @@ exports.postProfilePicture = (req, res)=>{
 };
 
 
-
+//TODO: verify social media link
 exports.postRegister = (req, res) => {
   User.findById(req.user.id, (err, user)=>{
     if (err){return next(err);}
@@ -298,6 +298,12 @@ exports.postRegister = (req, res) => {
     user.socialmedia.instagram = req.body.instagram || '';
     user.socialmedia.linkedin = req.body.linkedin || '';
     user.socialmedia.github = req.body.github || '';
+
+    //---------------------care scores-----------------------------------
+    user.careScores.interests = -1;
+    user.careScores.languages = -1;
+    user.careScores.technologies = -1;
+    user.careScores.fields = -1;
     //---------upload profile to gcloud-----------
     const file = req.file;
     if(file){ //upload pfp to gcloud

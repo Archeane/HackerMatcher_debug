@@ -85,35 +85,53 @@ let pleasework = 'not working :(';
 // 1. add corresponding fields for test users after users controllers is finished
 // 2. Redirect preferences back to the hackathon page 
 exports.getHackathon = async(req,res, next) => {
-/*
+  /* //invoke create test users
 	userArr = [];
 	for(let i = 1; i < 40; i++){
 		var user = await createTestUsers(i);
 		userArr.push(user);
 	}
-	console.log(userArr);
+	//console.log(userArr);
 	try{
 		console.log('userArr', userArr.length);
 		User.insertMany(userArr, {ordered:false});
-	}catch(e){
-		console.log('Error!', e);
-	}
-*/
-	Hackathon.findOne({id:req.params.id}, (err, hackathon)=>{
-		if(err){throw err;}
-		var zerorpc = require("zerorpc");
+		var userArrEmails = [];
+		for(i = 0; i < userArr.length; i++){
+			userArrEmails.push(userArr[i].email);
+		}
+		let hackathon = await Hackathon.findOne({id:req.params.id});
+		if(hackathon == null){
+			throw new Error("The hackathon does not exist.");
+		}
+		hackathon.hackers = userArrEmails;
+		hackathon.save();
+	}catch(err){
+		console.log(err);
+		req.flash('error', {msg:"Server Error, please try again later"});
+		next(err);
+	}*/
 
+	let hackathon = await Hackathon.findOne({id: req.params.id});
+	//verify user has filled in carescores
+	if(req.user.careScores.interests == -1 && !req.user.careScores.languages == -1 && !req.user.careScores.technologies == -1 && !req.user.careScores.fields == -1){
+		res.render('hackathon', {
+			title: hackathon.name, Hackathon: hackathon, result: false, currentHacker: req.user
+		});
+	}else if(hackathon.hackers.length == 0){
+		res.render('hackathon', {
+			title: hackathon.name, Hackathon: hackathon, result: -1, currentHacker: req.user
+		});
+	}else{
+		var zerorpc = require("zerorpc");
 		var client = new zerorpc.Client();
 		client.connect("tcp://127.0.0.1:4242");
-		client.invoke("hello", req.user.email, hackathon.name, function(error, response, more) {
-			result = response;
-			pleasework = response;
-			result = result.slice(0,10);
-			toptenhackers = [];
-
-			//TODO: fix this wait for foreach method
-			var found = result.length-1;
-			result.forEach((hacker) =>{
+		client.invoke("hello", req.user.email, hackathon.name, async(err, response, more)=>{
+			var emails = response;
+			pleasework = response; //global variable- save matching algorithmn result for visualization
+			emails = emails.slice(0,10);
+			var toptenhackers = [];
+			var found = emails.length-1;
+			emails.forEach((hacker) =>{
 				User.findOne({'email': hacker[0]}, (err, user)=>{
 					if(err){throw err;}
 					toptenhackers.push(user);
@@ -124,12 +142,9 @@ exports.getHackathon = async(req,res, next) => {
 						});
 					}
 				});
-				
-			});
+			}); //end of foreach
 		});
-		
-	});
-
+	}
 };
 
 exports.getHackathonVisualization = (req, res, next) =>{

@@ -1,5 +1,8 @@
 extends layout
 
+block append css
+	link(rel='stylesheet', href='/css/hackathon.css')
+
 block append head
 	script(src='/js/hackathon.js')
 	
@@ -11,28 +14,40 @@ block content
 		span#location
 		span#date
 
+	
+	span#changePrefMessage You haven't filled out your preferences. Please fill out your preferences to see matching hackers.  
+	span#zerohackers There's no hackers who registered for this hackathon yet. Try again later
+	<button id="pref">Change your preferences</button>
 
 	<div id = "app">
-		<div class="row" v-for="(hackerPref, index) in preferences">  <!--hacker.preference-->
-			<div class = "col-md-4">
-				
-			</div>
-			<div class = "col-md-2">
-				<h6>Commonnalities: </h6>
-			</div>
-			<div class="col-md-6">
-				<div v-for="(preference, idx) in hackerPref">  <!--hacker.preferences.interests-->
-					<span v-for="(pre, i) in preference">  <!--hacker.preferences.interests[i]-->
-						<span>{{pre}},</span>
-					</span>
+		<button id="showVis">Show Visualization</button>
+		<h3>Top Ten Hackers</h3>
+		<hr>
+		<div class="row">
+			.col-md-1
+			<div class="col-md-2" v-for="(hacker, index) in hackers">
+				<div class="img__wrap">
+					//picture
+					<a v-bind:href="'/users/'+hacker[0].email">
+						<img v-bind:src="hacker[0].picture" class="img__img" />
+					</a>
+					//picture description
+					<p class="img__description">
+						<span>{{hacker[0].school}}</span>
+						<span>{{hacker[0].major}}</span>
+					</p>
+				</div>
+				//preferences
+				<div v-for="(hackerPref, index) in hacker[1]">
+					<div v-for="(preference, idx) in hackerPref"> 
+						<li>{{preference}}</li>
+					</div>
 				</div>
 			</div>
-			<br />
 		</div>
 	</div>
 	
-	<button id="pref">Change your preferences</button>
-	<button id="showVis">Show Visualization</button>
+	
 	<div id = "vis">
 		
 	</div>
