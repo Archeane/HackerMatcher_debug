@@ -1,4 +1,14 @@
-console.log(User);
+$('#editProfile').on('click', (event)=>{
+	event.preventDefault();
+    $('.settings').css({
+        'display': 'block'
+
+    });
+    $('.content').css({
+        'display': 'none'
+    });
+});
+
 
 //----------------------about-----------------------
 $('#pfp').attr('src', User.profile.picture);
@@ -30,6 +40,18 @@ socialmedia = new Vue({
 });
 
 //-------------------preferences---------------------
+ints = [];
+for(i = 0; i < User.preferences.interests.length; i++){
+	ints.push(User.preferences.interests[i][0]);
+}
+allInts=[];
+$.getJSON('/assets/interests.json', (data) =>{
+	for (i = 0; i < data.length; i++){
+		if(!ints.includes(data[i]['name'])){
+			allInts.push(data[i]['name']);
+		}
+	}
+});
 
 langs = []
 for(i = 0; i < User.preferences.languages.length; i++){
@@ -42,22 +64,64 @@ $.getJSON('/assets/languages.json', (data) =>{
 			allLanguages.push(data[i]['name']);
 		}
 	}
-	console.log(allLanguages);
 });
 
+techs = [];
+for(i = 0; i < User.preferences.technologies.length; i++){
+	techs.push(User.preferences.technologies[i][0]);
+}
+allTechs=[];
+$.getJSON('/assets/technologies.json', (data) =>{
+	for (i = 0; i < data.length; i++){
+		if(!techs.includes(data[i]['name'])){
+			allTechs.push(data[i]['name']);
+		}
+	}
+});	
+
+fields = [];
+for(i = 0; i < User.preferences.fields.length; i++){
+	fields.push(User.preferences.fields[i][0]);
+}
+allFields=[];
+$.getJSON('/assets/fields.json', (data) =>{
+	for (i = 0; i < data.length; i++){
+		if(!fields.includes(data[i]['name'])){
+			allFields.push(data[i]['name']);
+		}
+	}
+});	
 
 app = new Vue({
 	el:'#app',
 	data:{
 		interests: User.preferences.interests,
-		languages:User.preferences.languages,
-		allLanguages:allLanguages,
-		technologies:User.preferences.technologies,
-		fields: User.preferences.fields
+		languages: User.preferences.languages,
+		technologies: User.preferences.technologies,
+		fields: User.preferences.fields,
+		allFields: allFields,
+		allInterests: allInts,
+		allTechnologies: allTechs,
+		allLanguages: allLanguages
 	},
 	computed:{
 		totalLanguages(){
 			return this.languages.reduce((sum) => {
+				return sum+1;
+			},0);
+		},
+		totalInterests(){
+			return this.interests.reduce((sum) => {
+				return sum+1;
+			},0);
+		},
+		totalTechnologies(){
+			return this.technologies.reduce((sum) => {
+				return sum+1;
+			},0);
+		},
+		totalFields(){
+			return this.fields.reduce((sum) => {
 				return sum+1;
 			},0);
 		}
@@ -69,11 +133,42 @@ app = new Vue({
 		},
 		addLanguage:function(lan, index){
 			if(this.languages.length <= 5){
-				console.log(lan, index)
-				var temp = [lan, 5]
+				var temp = [lan, 5];
 				this.languages.push(temp);
-				console.log(allLanguages.indexOf(lan))
 				this.allLanguages.splice(allLanguages.indexOf(lan),1);
+			}
+		},
+		deleteInterest: function(index, int) {
+			this.$delete(this.interests, index);
+			this.allInterests.push(int[0]);
+		},
+		addInterest:function(int, index){
+			if(this.interests.length <= 5){
+				var temp = [int, 5];
+				this.interests.push(temp);
+				this.allInterests.splice(this.allInterests.indexOf(int),1);
+			}
+		},
+		deleteTechnology: function(index, lan) {
+			this.$delete(this.technologies, index);
+			this.allTechnologies.push(lan[0]);
+		},
+		addTechnology:function(lan, index){
+			if(this.technologies.length <= 5){
+				var temp = [lan, 5];
+				this.technologies.push(temp);
+				this.allTechnologies.splice(this.allTechnologies.indexOf(lan),1);
+			}
+		},
+		deleteField: function(index, lan) {
+			this.$delete(this.fields, index);
+			this.allFields.push(lan[0]);
+		},
+		addField:function(lan, index){
+			if(this.fields.length <= 5){
+				var temp = [lan, 5]
+				this.fields.push(temp);
+				this.allFields.splice(this.allFields.indexOf(lan),1);
 			}
 		}
 	}
@@ -123,12 +218,8 @@ $("#imgInp").change(function() {
 $('#gender-select').val(User.profile.gender);
 
 //populate schools select
-$.getJSON('/assets/universities.json', (data) =>{
-	for (i = 0; i < data.length; i++){
-		var option = new Option(data[i]['institution'], data[i]['institution'], false, false);
-		$('#school-select').append(option);
-	}
-	$('#school-select').val(User.profile.school);
+$.getJSON('/assets/colleges.json', (data) =>{
+	$('#school-select').select2({data: data});
 });
 
 //Populate majors select

@@ -168,11 +168,56 @@ function uploadImgToGcloud(file){
   });
 }
 
+exports.postProfilePicture = (req, res)=>{
+  const file = req.file;
+  User.findById(req.user.id, (err, user)=>{
+    if(file){ //upload pfp to gcloud
+        var localReadStream = fs.createReadStream(file.path);
+      const gcsname = Date.now() + file.originalname;
+      var image = myBucket.file(gcsname);
+      localReadStream.pipe(image.createWriteStream({
+          metadata: {
+            contentType: 'image/jpeg',
+            metadata: {
+              custom: 'metadata'
+            }
+          }
+      })).on('error', function(err) {
+        console.log(err);
+        //still save the user
+        user.save((err)=>{
+          if(err){return next(err);}
+          //TODO: Inform the user pfp is not saved but other information is saved
+          req.flash('errors', {msg: 'An error has occured with the server. Your profile image was not saved, but your other information has been saved.'});
+          res.redirect('/home');
+        })
+      })
+      .on('finish', function() {
+          myBucket.file(gcsname).makePublic().then(() =>{
+            console.log('upload to gcloud success!', getPublicUrl(gcsname));
+            user.profile.picture = getPublicUrl(gcsname);
+            //async function to upload so must require a save function after
+            user.save((err)=>{
+              if(err){
+                console.log("error!");
+                if (err.code === 11000) {
+                  req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
+                  return res.redirect('/account');
+                }
+                return next(err);
+              }
+              req.flash('success', { msg: 'Profile information has been updated.' });
+              res.redirect('/home')
+            });
+          });
+      });
+    }
+  });
+};
 
-//TODO:
-// 3. test & verify database modification is successful
+
+
 exports.postRegister = (req, res) => {
-  console.log(req.body);
   User.findById(req.user.id, (err, user)=>{
     if (err){return next(err);}
     
@@ -311,11 +356,8 @@ exports.postRegister = (req, res) => {
     }
 
   });
-}
+};
 
-
-//TODO:
-// 1. include all fields in register
 exports.getAccount = (req, res) => {
   if(req.user){
     res.render('account/dashboard', {
@@ -324,62 +366,66 @@ exports.getAccount = (req, res) => {
   }
 };
 
-//TODO:
-// 1. include all fields in register
-// 2. test modification to database
+
 exports.postUpdateDashboard = (req, res, next) => {
   console.log(req.body);
   User.findById(req.user.id, (err, user) => {
     if (err) { return next(err); }
-      user.profile.gender = req.body.gender || '';
-      user.profile.location = req.body.location || '';
-      user.profile.website = req.body.website || '';
-      const file = req.file;
-    if(file){
-      console.log(file);
-      var localReadStream = fs.createReadStream(file.path);
-      const gcsname = Date.now() + file.originalname;
-      var image = myBucket.file(gcsname);
-      localReadStream.pipe(image.createWriteStream({
-          metadata: {
-            contentType: 'image/jpeg',
-            metadata: {
-              custom: 'metadata'
+      //update about
+      user.profile.gender = req.body.gender || user.profile.gender;
+      user.profile.school = req.body.school || user.profile.school;
+      user.profile.major = req.body.major || user.profile.major;
+      user.profile.graduationYear = req.body.gradYear || user.profile.graduationYear;
+      user.profile.educationLevel = req.body.eduLevel || user.profile.educationLevel;
+
+      //social media
+      user.socialmedia.facebook = req.body.facebook || user.socialmedia.facebook ;
+      user.socialmedia.phone = req.body.phone || user.socialmedia.phone;
+      user.socialmedia.website = req.body.website || user.socialmedia.website;
+      user.socialmedia.devpost = req.body.devpost || user.socialmedia.devpost;
+      user.socialmedia.instagram = req.body.instagram || user.socialmedia.instagram;
+      user.socialmedia.linkedin = req.body.linkedin || user.socialmedia.linkedin;
+      user.socialmedia.github = req.body.github || user.socialmedia.github;
+
+      //update preferences
+      var updates = req.body;
+      const preferences = extractPreferencesArray();
+      const mapping = ["interests", "languages", "technologies", "fields"];
+      var updatedresults = [[],[],[],[]];
+      for (var key in updates){
+      if(updates.hasOwnProperty(key)){ //looping through req.body
+        //if it's a similiarity score
+        if(key == "similiarinterersts"){
+          user.careScores.interests = updates[key];
+        }else if(key == "similiarlanguages"){
+          user.careScores.languages = updates[key];
+        }else if(key == "similiartechnologies"){
+          user.careScores.technologies = updates[key];
+        }else if(key == "similiarfields"){
+          user.careScores.fields = updates[key];
+        }else{
+          //check which category 
+          for(j = 0; j < preferences.length; j++){
+            if(preferences[j].includes(key)){
+              var containedPref = user['preferences'][mapping[j]];
+              var temp = [];
+              temp.push(key);
+              temp.push(parseInt(updates[key]));
+              updatedresults[j].push(temp);
             }
           }
-      })).on('error', function(err) {console.log(err);})
-      .on('finish', function() {
-          myBucket.file(gcsname).makePublic().then(() =>{
-            console.log('upload to gcloud success!', getPublicUrl(gcsname));
-            user.profile.picture = getPublicUrl(gcsname);
-            //async function to upload so must require a save function after
-            user.save((err)=>{
-              if(err){
-                console.log("error!");
-                if (err.code === 11000) {
-                  req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
-                  return res.redirect('/account');
-                }
-                return next(err);
-              }
-              req.flash('success', { msg: 'Profile information has been updated.' });
-              res.redirect('/account')
-            });
-          });
-        });
-    }else{
-      user.save((err) => {
-        if (err) {
-          if (err.code === 11000) {
-            req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
-            return res.redirect('/account');
-          }
-          return next(err);
         }
-        req.flash('success', { msg: 'Profile information has been updated.' });
-        res.redirect('/account');
-      });
+      }
     }
+    user.preferences.interests = updatedresults[0];
+    user.preferences.languages = updatedresults[1];
+    user.preferences.technologies = updatedresults[2];
+    user.preferences.fields = updatedresults[3];
+    user.save((err)=>{
+      if(err){throw err;}
+      req.flash('success', { msg: 'Profile information has been updated.' });
+      res.redirect('/home');
+    });
   });
 };
 
@@ -466,8 +512,6 @@ exports.postPreferences = (req, res) => {
       res.redirect('/home');
     });
     
-  }).then(()=>{
-    console.log("hello?");
   });
   
 };

@@ -2,25 +2,29 @@ extends ../layout
 
 block append css
   link(rel='stylesheet', href='/css/dashboard.css')
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
 block append head
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js")
   script(src="/js/dashboard.js")
 
 block content
   .pb-2.mt-2.mb-4.border-bottom
     h3 Profile Information
 
-  form(action='/account/profile?_csrf='+_csrf, method='POST', enctype='multipart/form-data')
+  form(action='/account/picture?_csrf='+_csrf, method='POST', enctype='multipart/form-data')
     
     <img id="pfp" src='' height="300" width="300"></img>
     .settings
       input(type="file", name="myFile", id="imgInp")
+    .content
+      <button type="button" id="editProfile"><i class='fas fa-cog'></i>Edit Profile</button>
 
+  form(action='/account', method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
     <div id="about">
-
       .content
         <span id="name"></span>
-      .content
         <span id="gender"></span>
       .settings
         <select id="gender-select" name="gender">
@@ -31,7 +35,8 @@ block content
       .content
         <span id="school"></span>
       .settings
-        <select id="school-select" name="school"></select>
+        select(id="school-select", name="school")
+          <option value="">Please enter your current institution</option> 
       .content
         <span id="major"></span>
       .settings
@@ -56,12 +61,55 @@ block content
           <option value="graduate">Graduate</option>
           <option value="phd">PhD</option>
         </select>
-
+      
+      //TODO: specific class for devpost, website, phone
       .content
         <li v-for="(socialmedia, index) in socialmedias">
           <a v-bind:class="[{'fab': true}, socialmedia[0] ? 'fa-' + socialmedia[0] : '']"v-bind:value="socialmedia[1]"></a>
         </li>
-    </div>
+      .settings
+        <div class="row">
+          <div class="col-md-4">
+            <label>Website:</label>
+          </div>
+          <input class="pull-right" name="website" placeholder="Personal Website" />
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Devpost:</label>
+          </div>
+          <input class="pull-right" name="devpost" placeholder="Devpost" />
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label>Phone:</label>
+          </div>
+          <input class="pull-right" name="phone" placeholder="Phone" />
+        </div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Facebook:</label>
+          </div>
+          <input style="width:70%;" name="facebook" placeholder="https://www.facebook.com/your_name" />
+        </div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Instagram:</label>
+          </div>
+          <input style="width:70%;" name="instagram" placeholder="https://www.instagram.com/your_name" />
+        </div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Linkedin:</label>
+          </div>
+          <input style="width:70%;" name="linkedin" placeholder="https://www.linkedin.com/your_name" />
+        </div>
+        <div class="row">
+          <div class="col-md-3" style="margin-left: -12px;">
+            <label>Github:</label>
+          </div>
+          <input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
+        </div>
     
     
     <div id="app">
@@ -71,10 +119,9 @@ block content
           <li>{{language[0]}}</li>
         </div>
       .settings
-        <input type="hidden" name="techContent" id="techContent"  />
         <div class="lang" v-for="(lan, index) in languages">
           <i v-on:click="deleteLanguage(index, lan)" class="fa fa-times" style="float-left"></i>{{lan[0]}}
-          <input style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
+          <input v-bind:name="lan[0]" style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
         </div>
         <button v-on:click.prevent v-if="totalLanguages < 5" data-toggle="modal" data-target="#modalLanguages" style="border-radius: 0px; border-width: 1px; text-align:center">
           <i class="fa fa-plus"></i> add</button>
@@ -99,28 +146,114 @@ block content
           </div>
         </div>
 
-    
-      <div class="interests" v-for="(interest, index) in interests">
-        <span style="float:right">{{interest[1]}}/10</span>
-        <li>{{interest[0]}}</li>
-      </div>
-      <div class="technologies" v-for="(technology, index) in technologies">
-        <span style="float:right">{{technology[1]}}/10</span>
-        <li>{{technology[0]}}</li>
-      </div>
-      <div class="fields" v-for="(field, index) in fields">
-        <span style="float:right">{{field[1]}}/10</span>
-        <li>{{field[0]}}</li>
-      </div>
+      .content
+        <div class="interests" v-for="(interest, index) in interests">
+          <span style="float:right">{{interest[1]}}/10</span>
+          <li>{{interest[0]}}</li>
+        </div>
+      .settings
+        <div class="ints" v-for="(int, index) in interests">
+          <i v-on:click="deleteInterest(index, int)" class="fa fa-times" style="float-left"></i>{{int[0]}}
+          <input v-bind:name="int[0]" style="float:right" v-bind:value="int[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalInterests < 5" data-toggle="modal" data-target="#modalInterests" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalInterests" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Interests</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(int, index) in allInterests">
+                  <div class="col-md-8">
+                    <span>{{int}}</span>
+                    <i v-on:click="addInterest(int, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      .content
+        <div class="technologies" v-for="(technology, index) in technologies">
+          <span style="float:right">{{technology[1]}}/10</span>
+          <li>{{technology[0]}}</li>
+        </div>
+      .settings
+        <div class="tech" v-for="(lan, index) in technologies">
+          <i v-on:click="deleteTechnology(index, lan)" class="fa fa-times" style="float-left"></i>{{lan[0]}}
+          <input v-bind:name="lan[0]" style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalTechnologies < 5" data-toggle="modal" data-target="#modalTechnologies" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalTechnologies" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Technologies</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(lan, index) in allTechnologies">
+                  <div class="col-md-8">
+                    <span>{{lan}}</span>
+                    <i v-on:click="addTechnology(lan, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      .content
+        <div class="fields" v-for="(field, index) in fields">
+          <span style="float:right">{{field[1]}}/10</span>
+          <li>{{field[0]}}</li>
+        </div>
+      .settings
+        <div class="field" v-for="(lan, index) in fields">
+          <i v-on:click="deleteField(index, lan)" class="fa fa-times" style="float-left"></i>{{lan[0]}}
+          <input v-bind:name="lan[0]" style="float:right" v-bind:value="lan[1]" type=number min="1" max="10"></input>
+        </div>
+        <button v-on:click.prevent v-if="totalFields < 5" data-toggle="modal" data-target="#modalFields" style="border-radius: 0px; border-width: 1px; text-align:center">
+          <i class="fa fa-plus"></i> add</button>
+        <div class="modal fade" id="modalFields" tabindex="-1" role="dialog" style="display:none;" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:dimgrey;">
+              <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="col-md-11">
+                  <h5 class="modal-title">Fields</h5>
+                </div>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+              </div>
+              <div class="modal-body">
+                <div class="row" v-for="(lan, index) in allFields">
+                  <div class="col-md-8">
+                    <span>{{lan}}</span>
+                    <i v-on:click="addField(lan, index)" class="fa fa-plus" style="float:right" ></i> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
     </div>
 
       
-    
-    .form-group
-      .offset-sm-3.col-md-7.pl-2
-        button.btn.btn.btn-primary(type='submit')
-          i.fas.fa-pencil-alt.fa-sm
-          | Update Profile
+    .settings
+      .form-group
+        .offset-sm-3.col-md-7.pl-2
+          button.btn.btn.btn-primary(type='submit')
+            i.fas.fa-pencil-alt.fa-sm
+            | Update Profile
 
   .pb-2.mt-2.mb-4.border-bottom
     h3 Change Password

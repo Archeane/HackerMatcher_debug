@@ -96,7 +96,7 @@ app.use(flash());
 
 
 app.post('/register', passportConfig.isAuthenticated, upload.single('myFile'), userController.postRegister);
-app.post('/account', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
+app.post('/account/picture', passportConfig.isAuthenticated, upload.single('myFile'), userController.postProfilePicture)
 app.post('/chat/:conversationId', passportConfig.isAuthenticated, chatController.sendReply);        //send reply in a conversation
 app.post('/chat/:conversationId/add', passportConfig.isAuthenticated, chatController.addMember);
 app.post('/chat', passportConfig.isAuthenticated, chatController.getConversations);
@@ -202,7 +202,7 @@ app.post('/reset/:token', userController.postReset);
 app.post('/signup', userController.postSignup);
 
 app.get('/register', userController.getRegister);
-
+app.post('/account', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
 app.get('/preferences', passportConfig.isAuthenticated, userController.getPreferences);
 app.post('/preferences', passportConfig.isAuthenticated, userController.postPreferences);
 
