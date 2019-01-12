@@ -9,6 +9,7 @@ html
     title #{title} - Hackathon Starter
     link(rel='shortcut icon', href='/favicon.png')
     link(rel='stylesheet', href='/css/main.css')
+    link(rel='stylesheet', href='/css/partials.css')
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     block css
 
@@ -17,17 +18,22 @@ html
     script(src='/js/lib/popper.min.js')
     script(src='/js/lib/bootstrap.min.js')
     script(src='/js/main.js')
-    
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.0/typeahead.bundle.min.js" type="text/javascript")
 
     include partials/header
+    include partials/conversations
+
 
     .container
       include partials/flash
       block content
 
     include partials/footer
-
-  
+    
+    if user
+      script(src="/js/conversations.js")
+      script(src='/js/search.js')
+    
     block head
       script(src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js")
 

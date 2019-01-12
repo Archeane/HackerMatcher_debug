@@ -37,7 +37,7 @@ const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
 const hackathonController = require('./controllers/hackathon.js');
-
+const chatController = require('./controllers/chat.js');
 
 /**
  * API keys and Passport configuration.
@@ -96,7 +96,13 @@ app.use(flash());
 
 
 app.post('/register', passportConfig.isAuthenticated, upload.single('myFile'), userController.postRegister);
-app.post('/account/dashboard', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
+app.post('/account/picture', passportConfig.isAuthenticated, upload.single('myFile'), userController.postProfilePicture)
+app.post('/chat/:conversationId', passportConfig.isAuthenticated, chatController.sendReply);        //send reply in a conversation
+app.post('/chat/:conversationId/add', passportConfig.isAuthenticated, chatController.addMember);
+app.post('/chat', passportConfig.isAuthenticated, chatController.getConversations);
+app.post('/search/:query', homeController.search);
+app.post('/search', homeController.autoSearch);
+
 
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
@@ -137,17 +143,37 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
 //-----------------CHAT TESTING AREA------------------
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-app.get('/chat', homeController.getChat);
 
 io.on('connection', function(socket){
   console.log('a user connected');
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+  socket.on('enter conversation', (conversation) => {
+    socket.join(conversation);
+    /*//get the conversation room 
+    var room = io.sockets.adapter.rooms[conversation];
+    console.log(room.length);
+    console.log(room);*/
   });
-  socket.on('disconnect', function(){
+  socket.on('leave conversation', (conversation) => {
+    socket.leave(conversation);
+    //console.log('left ' + conversation);
+  });
+
+  socket.on('new message', (sender,message, conversation) => {
+    /*console.log("new message received:");
+    console.log(message);
+    console.log(conversation);*/
+    io.to(conversation).emit('new message', sender, message);
+  });
+
+  socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 });
+
+//app.get('/chat', chatController.chat);
+//app.get('/chat', chatController.getConversations);
+app.get('/chat/:conversationID', chatController.getConversation);
+app.post('/new/:recipient', chatController.newConversation);       //start a new conversation
 
 
 
@@ -175,8 +201,8 @@ app.post('/reset/:token', userController.postReset);
 //app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
 
-app.get('/register', passportConfig.isAuthenticated, userController.getRegister);
-
+app.get('/register', userController.getRegister);
+app.post('/account', passportConfig.isAuthenticated, upload.single('myFile'), userController.postUpdateDashboard);
 app.get('/preferences', passportConfig.isAuthenticated, userController.getPreferences);
 app.post('/preferences', passportConfig.isAuthenticated, userController.postPreferences);
 

@@ -1,23 +1,31 @@
 extends layout
 
+block append head
+    script(src="/js/chat.js")
+
 block content
-    <ul id="messages"></ul>
-    <form action="">
+    //TODO: populate form with a users search bar 
+    <form id="addMemberForm">
+        <input id="newMember" />
+        <button type="submit">Add to Group</button>
+    </form>
+
+    <div id="messages-app">
+        <ul v-for="(msg, index) in messages">
+            <li><img height="30" v-bind:src="msg[1]">{{msg[0]}}: {{msg[2]}}</li>
+        </ul>
+    </div>
+    ul#othersMessages
+    ul#myMessages
+
+    <form id="messageForm" method="POST">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/js/lib/socket.io.js"></script>
     script.
-      $(function () {
-        var socket = io();
-        $('form').submit(function(e){
-          e.preventDefault(); // prevents page reloading
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-  
+        var Messages = !{JSON.stringify(messages)};
+        var Participants = !{JSON.stringify(participants)};
+        var User = !{JSON.stringify(currentUser)}
+        console.log(Messages);
+        console.log(Participants);
+        console.log(User);

@@ -6,7 +6,11 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   emailVerified: Boolean,
   emailVerifyToken: String,
-  
+  firstName: String,
+  lastName: String,
+  name: String,
+
+
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
@@ -26,12 +30,8 @@ const userSchema = new mongoose.Schema({
 
   profile: {
     major: String,
-    firstName: String,
-    lastName: String,
-    name: String,
     gender: String,
     school: String,
-    
     graduationYear: String,
     educationLevel: String,
     about: String,
