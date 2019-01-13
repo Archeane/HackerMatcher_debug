@@ -31,3 +31,13 @@ hr
     height: 100px;
     border-radius: 50%;
 }
+
+.hack-info
+{
+    float: right;
+}
+.info-container
+{
+    margin-top:10px;
+    border: 2px solid black;
+}

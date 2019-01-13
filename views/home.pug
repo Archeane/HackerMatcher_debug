@@ -35,37 +35,45 @@ block content
       <p>{{hackathon.city}}, {{hackathon.state}}</p>
       <p>{{hackathon.date}}</p>
     //</div>
-    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+    <div class="col-md-8 info-container" v-for="(hackathon, index) in allhackathons">
       <a v-bind:href="'/hackathons/'+hackathon.id">
       <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
       </a>
-      <h4>HackNY</h4>
-      <p>New York, New York</p>
-      <p>1/1/19</p>
+      <div class = "col-md-4 hack-info">
+        <h4>HackNY</h4>
+        <p>New York, New York</p>
+        <p>1/1/19</p>
+      </div>
     </div>
-    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+    <div class="col-md-8 info-container" v-for="(hackathon, index) in allhackathons">
       <a v-bind:href="'/hackathons/'+hackathon.id">
       <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
       </a>
-      <h4>HackNY</h4>
-      <p>New York, New York</p>
-      <p>1/1/19</p>
+      <div class = "col-md-4 hack-info">
+        <h4>HackNY</h4>
+        <p>New York, New York</p>
+        <p>1/1/19</p>
+      </div>
     </div>
-    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+    <div class="col-md-8 info-container" v-for="(hackathon, index) in allhackathons">
       <a v-bind:href="'/hackathons/'+hackathon.id">
       <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
       </a>
-      <h4>HackNY</h4>
-      <p>New York, New York</p>
-      <p>1/1/19</p>
+      <div class = "col-md-4 hack-info">
+        <h4>HackNY</h4>
+        <p>New York, New York</p>
+        <p>1/1/19</p>
+      </div>
     </div>
-    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+    <div class="col-md-8 info-container" v-for="(hackathon, index) in allhackathons">
       <a v-bind:href="'/hackathons/'+hackathon.id">
       <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
       </a>
-      <h4>HackNY</h4>
-      <p>New York, New York</p>
-      <p>1/1/19</p>
+      <div class = "col-md-4 hack-info">
+        <h4>HackNY</h4>
+        <p>New York, New York</p>
+        <p>1/1/19</p>
+      </div>
     </div>
   //script.
     var Hackathons = !{JSON.stringify(hackathons)};

@@ -25,7 +25,7 @@
           form(id="searchForm")
             div.input-group
               input(type='hidden', name='_csrf', value=_csrf)
-              input.form-control(type="text" id="searchContent" class="typeahead" list="potentials")
+              input.form-control(type="text" id="searchContent" class="typeahead" list="potentials" placeholder="Search for users and hackathons")
               datalist(id="potentials")
               span.input-group-btn
                 button#search-btn.btn-primary(type='submit') Search
