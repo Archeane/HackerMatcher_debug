@@ -1,0 +1,29 @@
+#title
+{
+    text-align: center;
+}
+#menu
+{
+    list-style-type: none;
+    float: right;
+    position: fixed;
+    right: -8.5em;
+    margin-top: -2.5em;  
+    border: 5px solid black; 
+    transition: 0.2s;
+}
+#menu:hover 
+{ 
+    right: 0;
+}
+.chat-item
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.chat-heads
+{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}

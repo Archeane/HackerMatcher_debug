@@ -2,21 +2,72 @@ extends layout
 
 block append head
   script(src='/js/home.js')
-
+block append css
+  link(href="/css/home.css", rel="stylesheet", type="text/css")
 
 block content
-  h1 Choose Your Hackathon
-  p.lead A boilerplate for Node.js web applications.
+  h1#title Choose Your Hackathon
   hr
+  ul#menu 
+    <li class="chat-item"> 
+      <a href=""> <img class = "chat-heads" src="https://davd.photo/wp-content/uploads/2017/03/corporate-headshots-14.jpg"></a>
+    </li>
+    <li class="chat-item"> 
+      <a href=""> <img class = "chat-heads" src="https://davd.photo/wp-content/uploads/2017/03/corporate-headshots-3.jpg"></a>
+    </li>
+    <li class="chat-item"> 
+      <a href=""> <img class = "chat-heads" src="https://43laq7hfw6b26gd6y23qp1cq-wpengine.netdna-ssl.com/wp-content/uploads/2017/10/Ben-Marcum-Photography-Headshot-Photographer-Louisville-Kentucky-Professional-Headshots-Grant-Quasha-Aug-29-2017-080-1024x819.jpg"></a>
+    </li>
+    <li class="chat-item"> 
+      <a href=""> <img class = "chat-heads" src="https://davd.photo/wp-content/uploads/2017/03/corporate-headshots-14.jpg"></a>
+    </li>
+    <li class="chat-item"> 
+      <a href=""> <img class = "chat-heads" src="https://davd.photo/wp-content/uploads/2017/03/corporate-headshots-3.jpg"></a>
+    </li>
+    <li class="chat-item"> 
+      <a href=""> <img class = "chat-heads" src="https://43laq7hfw6b26gd6y23qp1cq-wpengine.netdna-ssl.com/wp-content/uploads/2017/10/Ben-Marcum-Photography-Headshot-Photographer-Louisville-Kentucky-Professional-Headshots-Grant-Quasha-Aug-29-2017-080-1024x819.jpg"></a>
+    </li>
   .row#app
-    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+    //<div class="col-md-6" v-for="(hackathon, index) in allhackathons">
       <a v-bind:href="'/hackathons/'+hackathon.id">
       <img height="80" v-bind:src="hackathon.logo" v-bind:alt="hackathon.name" /></a>
       <h4>{{hackathon.name}}</h4>
       <p>{{hackathon.city}}, {{hackathon.state}}</p>
-      <p>{{hackathon.date}}
+      <p>{{hackathon.date}}</p>
+    //</div>
+    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+      <a v-bind:href="'/hackathons/'+hackathon.id">
+      <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
+      </a>
+      <h4>HackNY</h4>
+      <p>New York, New York</p>
+      <p>1/1/19</p>
     </div>
-  script.
+    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+      <a v-bind:href="'/hackathons/'+hackathon.id">
+      <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
+      </a>
+      <h4>HackNY</h4>
+      <p>New York, New York</p>
+      <p>1/1/19</p>
+    </div>
+    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+      <a v-bind:href="'/hackathons/'+hackathon.id">
+      <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
+      </a>
+      <h4>HackNY</h4>
+      <p>New York, New York</p>
+      <p>1/1/19</p>
+    </div>
+    <div class="col-md-6" v-for="(hackathon, index) in allhackathons">
+      <a v-bind:href="'/hackathons/'+hackathon.id">
+      <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
+      </a>
+      <h4>HackNY</h4>
+      <p>New York, New York</p>
+      <p>1/1/19</p>
+    </div>
+  //script.
     var Hackathons = !{JSON.stringify(hackathons)};
     console.log(Hackathons);
     
