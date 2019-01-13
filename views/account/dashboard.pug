@@ -9,41 +9,27 @@ block append head
   script(src="/js/dashboard.js")
 
 block content
-  .pb-2.mt-2.mb-4.border-bottom
-    h3 Profile Information
+  .pb-2.mt-2.mb-4.border-bottom#topwrapper
+    <button type="button" id="editProfile"><i class='fas fa-cog'></i>Edit Profile</button>
 
   form(action='/account/picture?_csrf='+_csrf, method='POST', enctype='multipart/form-data')
-    
-    <img id="pfp" src='' height="300" width="300"></img>
+    div.col-lg-12#pfp-container
+      <img id="pfp" src='' height="300" width="300"></img>
     .settings
       input(type="file", name="myFile", id="imgInp")
-    .content
-      <button type="button" id="editProfile"><i class='fas fa-cog'></i>Edit Profile</button>
+    .content   
 
   form(action='/account', method='POST')
     input(type='hidden', name='_csrf', value=_csrf)
     <div id="about">   
-      .content
-        <span id="name"></span>
-        <span id="gender"></span>
-      .settings
-        <select id="gender-select" name="gender">
-          <option value='male'>Male</option>
-          <option value='female'>Female</option>
-          <option value='other'>Other</option>
-        </select>
-      .content
-        <span id="school"></span>
+      .content#namewrapper
+        //<span id="name"></span>
+        <span id="name2"> test</span>
+      .content#subwrapper
+        <span id="school"></span> <span id="gradYear"></span><span id="divider">|</span><span id="major"></span>
       .settings
         select(id="school-select", name="school")
-          <option value="">Please enter your current institution</option> 
-      .content
-        <span id="major"></span>
-      .settings
-        <select id="major-select" name="major"></select>
-      .content
-        <span id="gradYear"></span>
-      .settings
+          <option value="">Please enter your current institution</option>  
         <select id="gradYear-select" name="gradYear">
           <option value="2018">2018</option>
           <option value="2019">2019</option>
@@ -52,23 +38,16 @@ block content
           <option value="2022">2022</option>
           <option value="2023">2023</option>
         </select>
-      .content
-        <span id="eduLevel"></span>
-      .settings
-        <select id="eduLevel-select" name="eduLevel">
-          <option value="highschool">High School</option>
-          <option value="undergrad">Undergrad</option>
-          <option value="graduate">Graduate</option>
-          <option value="phd">PhD</option>
-        </select>
+        <select id="major-select" name="major"></select>
       <div id="socialmedia-app">
-        .content
-          <li v-for="(socialmedia, index) in socialmedias">
-            <a v-if="socialmedia[0] == 'phone'" v-bind:value="socialmedia[1]" ><i class="fas fa-mobile"></i></a>
-            <a v-if="socialmedia[0] == 'devpost'" v-bind:href="socialmedia[1]"><img src="/assets/devpost.png" height=30 /></a>
-            <a v-if="socialmedia[0] == 'website'" v-bind:href="socialmedia[1]"><i class="fab fa-blogger"></i></a>
-            <a v-else v-bind:href="socialmedia[1]"><i v-bind:class="[{'fab': true}, socialmedia[0] ? 'fa-' + socialmedia[0] : '']"></i></a>
-          </li>
+        .content#social-wrapper
+          ul#social-menu
+            <li class="social-items" v-for="(socialmedia, index) in socialmedias">
+              <a v-if="socialmedia[0] == 'phone'" v-bind:value="socialmedia[1]" ><i class="fas fa-mobile"></i></a>
+              <a v-if="socialmedia[0] == 'devpost'" v-bind:href="socialmedia[1]"><img src="/assets/devpost.png" height=30 /></a>
+              <a v-if="socialmedia[0] == 'website'" v-bind:href="socialmedia[1]"><i class="fab fa-blogger"></i></a>
+              <a v-else v-bind:href="socialmedia[1]"><i v-bind:class="[{'fab': true}, socialmedia[0] ? 'fa-' + socialmedia[0] : '']"></i></a>
+            </li>
         .settings
           <div class="row">
             <div class="col-md-4">
@@ -113,6 +92,24 @@ block content
             <input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
           </div>
       </div>
+      .content
+        <span id="gender"></span>
+      .settings
+      <select id="gender-select" name="gender">
+        <option value='male'>Male</option>
+        <option value='female'>Female</option>
+        <option value='other'>Other</option>
+      </select>
+      .content
+        <span id="eduLevel"></span>
+      .settings
+        <select id="eduLevel-select" name="eduLevel">
+          <option value="highschool">High School</option>
+          <option value="undergrad">Undergrad</option>
+          <option value="graduate">Graduate</option>
+          <option value="phd">PhD</option>
+        </select>
+      
     
     <div id="app">
       .content
