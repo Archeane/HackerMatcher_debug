@@ -8,6 +8,7 @@ block append css
 block content
   h1#title Choose Your Hackathon
   hr
+  //***THE IMG AND A TAGS BELOW IS ALL DEBUG CODE REPLACE WITH CORRECT DATA ON PRODUCTION***
   ul#menu 
     <li class="chat-item"> 
       <a href=""> <img class = "chat-heads" src="https://davd.photo/wp-content/uploads/2017/03/corporate-headshots-14.jpg"></a>
@@ -35,6 +36,8 @@ block content
       <p>{{hackathon.city}}, {{hackathon.state}}</p>
       <p>{{hackathon.date}}</p>
     //</div>
+
+    //***THE CODE BELOW IS ALL DEBUG CODE DELETE ON PRODUCTION***
     <div class="col-md-8 info-container" v-for="(hackathon, index) in allhackathons">
       <a v-bind:href="'/hackathons/'+hackathon.id">
       <img height="80" src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_photos/000/671/439/datas/full_width.png" /></a>
