@@ -1,0 +1,12 @@
+.navbar-light .navbar-brand
+{
+    font-size: 24px;
+}
+#search-btn
+{
+    height: 38px;
+}
+#searchContent
+{
+    width: 270px;
+}
