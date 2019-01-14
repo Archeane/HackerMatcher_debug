@@ -13,6 +13,10 @@ $('#date').text(Hackathon.date || "");
 $('#pref').on('click', ()=>{
 	location.href = window.location.origin+"/preferences";
 });
+$('#showVis').on('click', ()=>{
+	console.log('huh');
+	window.location.replace(window.location.href+"/visualization");
+});
 if(result == false){
 	$('#app').hide();
 	$('#zerohackers').hide();
@@ -25,9 +29,7 @@ if(result == false){
 	$('#app').show();
 	$('#changePrefMessage').hide();
 	$('#zerohackers').hide();
-	$('#showVis').on('click', ()=>{
-	    location.href = window.location.href+"/visualization";
-	});
+
 
 	//currentHackerInterests = ["Machine Learning", "AI"...]
 	var currentHackerInterests = [];
