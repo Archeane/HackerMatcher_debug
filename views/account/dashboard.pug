@@ -24,7 +24,7 @@ block content
     <div id="about">   
       .content#namewrapper
         //<span id="name"></span>
-        <span id="name2"> test</span>
+        <span id="name2"> FirstName LastName</span>
       .content#subwrapper
         <span id="school"></span> <span id="gradYear"></span><span id="divider">|</span><span id="major"></span>
       .settings
@@ -92,24 +92,23 @@ block content
             <input style="width:70%;" name="github" placeholder="https://www.github.com/your_name" />
           </div>
       </div>
-      .content
+      //.content
         <span id="gender"></span>
-      .settings
-      <select id="gender-select" name="gender">
-        <option value='male'>Male</option>
-        <option value='female'>Female</option>
-        <option value='other'>Other</option>
-      </select>
-      .content
+      //.settings
+        <select id="gender-select" name="gender">
+          <option value='male'>Male</option>
+          <option value='female'>Female</option>
+          <option value='other'>Other</option>
+        </select>
+      //.content
         <span id="eduLevel"></span>
-      .settings
+      //.settings
         <select id="eduLevel-select" name="eduLevel">
           <option value="highschool">High School</option>
           <option value="undergrad">Undergrad</option>
           <option value="graduate">Graduate</option>
           <option value="phd">PhD</option>
         </select>
-      
     
     <div id="app">
       .content
@@ -181,8 +180,8 @@ block content
       
       .content
         <div class="technologies" v-for="(technology, index) in technologies">
-          <span style="float:right">{{technology[1]}}/10</span>
-          <li>{{technology[0]}}</li>
+         <span style="float:right">{{technology[1]}}/10</span>
+         <li>{{technology[0]}}</li>
         </div>
       .settings
         <div class="tech" v-for="(lan, index) in technologies">
