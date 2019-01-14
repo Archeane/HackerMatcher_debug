@@ -1,6 +1,10 @@
 extends layout
 
+block append css
+    link(rel='stylesheet', href='/css/chat.css')
+
 block append head
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js')
     script(src="/js/chat.js")
 
 block content
@@ -9,12 +13,33 @@ block content
         <input id="newMember" />
         <button type="submit">Add to Group</button>
     </form>
-
-    <div id="messages-app">
-        <ul v-for="(msg, index) in messages">
-            <li><img height="30" v-bind:src="msg[1]">{{msg[0]}}: {{msg[2]}}</li>
-        </ul>
+    <div id="messages-app" class="messaging">
+      <div class="inbox_msg">
+        <div class="mesgs">
+          <div class="msg_history">
+            <div v-for="(msg, index) in historyMessages">
+                <div v-if="msg[5]==true" class="outgoing_msg">
+                  <div class="sent_msg">
+                    <p>{{msg[2]}}</p>
+                    <span class="time_date"> {{msg[3]}}    |    {{msg[4]}}</span> </div>
+                </div>
+                <div v-else class="incoming_msg">
+                  <div class="incoming_msg_img">
+                    <img v-bind:src="msg[1]">
+                    <span class="incoming_name">{{msg[0]}}</span>
+                  </div>
+                  <div class="received_msg">
+                    <div class="received_withd_msg">
+                      <p>{{msg[2]}}</p>
+                      <span class="time_date"> {{msg[3]}}   |    {{msg[4]}}</span></div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    
     ul#othersMessages
     ul#myMessages
 

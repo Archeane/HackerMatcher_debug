@@ -4,15 +4,16 @@ $.ajax({
 	type:"POST",
 	url:"http://localhost:8080/chat",
 	success: function(data){
-		console.log(data);
+		//console.log(data);
 		if(typeof data ==='object'){
 			for (var key in data) {
 			    if (data.hasOwnProperty(key)) {
 			    	var conversation = $('<li>');
+			    	conversation.attr('class', 'chat-item');
 			    	var conversationLink = $('<a>').attr('href', "http://localhost:8080/chat/"+key).appendTo(conversation);
 			    	var conversationImg = $('<img>').attr('src', data[key]);
 			    	conversationImg.attr('id', key);
-			    	conversationImg.attr('class', "conversation");
+			    	conversationImg.attr('class', "chat-heads");
 			    	conversationImg.appendTo(conversationLink);
 			    	$('#conversation-list').append(conversation);
 			    }

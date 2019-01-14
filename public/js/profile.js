@@ -1,5 +1,7 @@
 console.log(User);
 
+//TODO: handle when there is no preferences. dont show it on the front it.
+
 $('#startChat').attr('action', '/new/'+User._id);
 
 //----------------------about-----------------------
