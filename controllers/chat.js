@@ -13,14 +13,16 @@ exports.getConversations = async function(req, res, next){
       let conversationPics = {};
       for(const conversation of conversations){
         if(conversation.participants.length == 2){
-          var otherPersonIndex = 1;
-          if(!(conversation.participants[otherPersonIndex].toString() === req.user._id.toString())){//toggle index of participant that is not user
-            otherPersonIndex = 0;
+          var otherPersonIndex = 0;
+          var tempId = conversation.participants[0].toString();
+          if(tempId == req.user._id.toString()){
+            otherPersonIndex = 1;
           }
           try{
-            let user = await User.findOne({"_id": conversation.participants[otherPersonIndex]});
-            if(user.profile.picture){
-              conversationPics[conversation._id] = user.profile.picture;
+            let otherUser = await User.findOne({"_id": conversation.participants[otherPersonIndex]});
+            //console.log(otherUser);
+            if(otherUser.profile.picture){
+              conversationPics[conversation._id] = otherUser.profile.picture;
             }else{
               conversationPics[conversation._id] = conversation.image;
             }
@@ -30,7 +32,7 @@ exports.getConversations = async function(req, res, next){
         }
       }
       res.status(200).send(conversationPics);
-      console.log(conversationPics);
+      //console.log(conversationPics);
     }
   }catch(err){throw err;}
 }
@@ -52,12 +54,16 @@ exports.getConversation = function(req, res, next) {
           var participantsInfo = [];
           participants.forEach((partcipant)=>{
             User.findOne(partcipant, (err, user)=>{
+              if(err){
+                req.flash('error', {msg:"An error occured with the server. Please try again later"})
+                next(err);
+              }
               length--;
               if(err){throw err;}
-              if(user && user._id.toString() != req.user._id.toString()){
+              if(user && user._id.toString() != req.user._id.toString()){ //exclude logged in user from participants array
                 var participantInfo = [];
                 participantInfo.push(user._id);
-                participantInfo.push(user.profile.name || "");
+                participantInfo.push(user.name || "");
                 participantInfo.push(user.profile.picture || "");
                 participantsInfo.push(participantInfo);
               }
@@ -66,10 +72,6 @@ exports.getConversation = function(req, res, next) {
                 Message.find({ "conversationId":req.params.conversationID})
                   .select('createdAt body author')
                   .sort('-createdAt')
-                  .populate({
-                    path: 'author',
-                    select: 'profile.firstName profile.lastName'
-                  })
                   .exec(function(err, messages) {
                     if (err) {
                       res.send({ error: err });
@@ -77,7 +79,7 @@ exports.getConversation = function(req, res, next) {
                     }
                     res.render('chat', {messages: messages, participants: participantsInfo, currentUser: req.user});
                     //res.status(200).json({ conversation: messages });
-                });
+                  });
               }
             }); 
           }); //end of foreach
@@ -133,7 +135,7 @@ exports.newConversation = function(req, res, next) {
           }else if(length == 0){  //there does not exist a conversation between these two participants
             console.log("creating new convo", length);
             //TODO: this way of obtaining image does not work 
-            var img = require('../public/assets/add_conversation_image.png')
+            var img = "https://cdn3.iconfinder.com/data/icons/glyph/227/Button-Add-3-512.png";
             const conversation = new Conversation({
               participants: [req.user._id, req.params.recipient],
               image: img
@@ -163,7 +165,8 @@ exports.newConversation = function(req, res, next) {
           }
         });
       }else{
-        var img = require('../public/assets/add_conversation_image.png')
+        //var img = require('../public/assets/add_conversation_image.png')
+        var img = "https://cdn3.iconfinder.com/data/icons/glyph/227/Button-Add-3-512.png";
         const conversation = new Conversation({
           participants: [req.user._id, req.params.recipient],
           image: img

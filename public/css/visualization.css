@@ -1,0 +1,15 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+body {
+    font-family: montserrat, arial, verdana;
+}
+
+
+.tooltip{
+	letter-spacing: 2px;
+	font-size: 0.6em;
+	background-color: white;
+	border-radius: 10px;
+	height:wrap-content;
+	width: wrap-content;
+}

@@ -1,14 +1,36 @@
 /*CONVERSATION BAR*/
-#conversation-list{
-	width: 80px;
+#conversation-list
+{
+    list-style-type: none;
+    float: right;
+    position: fixed;
+    right: -8.5em;
+    margin-top: -2.5em;  
+    border: 5px solid black; 
+    transition: 0.2s;
+}
+#conversation-list:hover 
+{ 
+    right: 0;
+}
+.chat-item
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.chat-heads
+{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
 }
 
-#conversation-list img{
-	border-radius: 50%;
-	height: 50px;
-	width: 50px;
+.hack-info
+{
+    float: right;
 }
-
-#conversation-list li{
-	list-style-type: none;
+.info-container
+{
+    margin-top:10px;
+    border: 2px solid black;
 }

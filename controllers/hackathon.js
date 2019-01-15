@@ -79,7 +79,7 @@ function createTestUsers(k){
 	
 }
 
-let pleasework = 'not working :(';
+let pleasework = false;
 
 //TODO:
 // 1. add corresponding fields for test users after users controllers is finished
@@ -148,48 +148,79 @@ exports.getHackathon = async(req,res, next) => {
 };
 
 exports.getHackathonVisualization = (req, res, next) =>{
-	Hackathon.findOne({id:"1"}, (err, hackathon)=>{
-		if(err){throw err;}
-		var zerorpc = require("zerorpc");
+	if(pleasework == false){
+		Hackathon.findOne({id:req.params.id}, (err, hackathon)=>{
+			if(err){throw err;}
+			var zerorpc = require("zerorpc");
 
-		var client = new zerorpc.Client();
-		client.connect("tcp://127.0.0.1:4242");
-		client.invoke("hello", req.user.email, hackathon.name, function(error, response, more) {
-			let topfiftyhackers = response.slice(0, 50); 
-			var minifiedUsers = [];						//array of top 50 hackers with minified data
-			new Promise(async(resolve, reject) => {
-				for(let hacker of topfiftyhackers){
-					let data = await User.findOne({'email':hacker[0]});
-					var user = JSON.stringify({
-						"email":data.email,
-						"numOfHackathons":data.numOfHackathons,
-						"name": data.profile.name,
-						"profileurl": data.profile.picture,
-						"school":data.profile.school,
-						"major":data.profile.major,
-						"graduationYear":data.profile.graduationYear,
-						"educationLevel":data.profile.educationLevel,
-						"score": hacker[1]
+			var client = new zerorpc.Client();
+			client.connect("tcp://127.0.0.1:4242");
+			client.invoke("hello", req.user.email, hackathon.name, function(error, response, more) {
+				let topfiftyhackers = response.slice(0, 50); 
+				var minifiedUsers = [];						//array of top 50 hackers with minified data
+				new Promise(async(resolve, reject) => {
+					for(let hacker of topfiftyhackers){
+						let data = await User.findOne({'email':hacker[0]});
+						var user = JSON.stringify({
+							"id": data._id,
+							"email":data.email,
+							"numOfHackathons":data.numOfHackathons,
+							"name": data.profile.name,
+							"profileurl": data.profile.picture,
+							"school":data.profile.school,
+							"major":data.profile.major,
+							"graduationYear":data.profile.graduationYear,
+							"educationLevel":data.profile.educationLevel,
+							"score": hacker[1]
+						});
+						//console.log(user);
+						minifiedUsers.push(user);
+					}
+					//console.log(minifiedUsers);
+					resolve(minifiedUsers);
+				}).then(function(result){
+					res.render('visualization', {
+						title:'Visualization', matches: result
 					});
-					//console.log(user);
-					minifiedUsers.push(user);
-				}
-				console.log(minifiedUsers);
-				resolve(minifiedUsers);
-			}).then(function(result){
-				res.render('visualization', {
-					title:'Visualization', matches: result
+				}, function(err){
+					throw err;
 				});
-			}, function(err){
-				throw err;
 			});
+			
 		});
-		
-	});
-/*
-	console.log(pleasework);
-*/
+	}else{
+		var topfiftyhackers = pleasework;
+		var minifiedUsers = [];
+		new Promise(async(resolve, reject) => {
+			for(let hacker of topfiftyhackers){
+				let data = await User.findOne({'email':hacker[0]});
+				var user = JSON.stringify({
+					"id": data._id,
+					"email":data.email,
+					"numOfHackathons":data.numOfHackathons,
+					"name": data.profile.name,
+					"profileurl": data.profile.picture,
+					"school":data.profile.school,
+					"major":data.profile.major,
+					"graduationYear":data.profile.graduationYear,
+					"educationLevel":data.profile.educationLevel,
+					"score": hacker[1]
+				});
+				//console.log(user);
+				minifiedUsers.push(user);
+			}
+			//console.log(minifiedUsers);
+			resolve(minifiedUsers);
+		}).then(function(result){
+			res.render('visualization', {
+				title:'Visualization', matches: result
+			});
+		}, function(err){
+			throw err;
+		});
+	}
 	
+
 
 }
 

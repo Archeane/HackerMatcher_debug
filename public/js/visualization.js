@@ -3,7 +3,7 @@ function DisplayVisualization(){
 	for(i = 0; i < Matches.length; i++){
 		MatchesJSON.push(JSON.parse(Matches[i]));
 	}
-	console.log(MatchesJSON);
+	//console.log(MatchesJSON);
 	
 //-------------filters-----------------------
 	var allMajors = [];
@@ -172,6 +172,7 @@ function bubbleChart() {
 	// working with data.
 	var myNodes = rawData.map(function (d) {
 	  return {
+	  	id: d.id,
 	  	email: d.email,
 		radius: radiusScale(+d.score),
 		value: d.score,
@@ -207,17 +208,17 @@ function bubbleChart() {
 
 	var defs = svg.append('defs')
 
-	defs.append("pattern")
-		.attr('id','snow')
-		.attr('height',"100%")
-		.attr('width', "100%")
-		.attr('patternContentUnits','objectBoundingBox')
-		.append("image")
-		.attr('height',1)
-		.attr('width',1)
-		.attr('preserveAspectRatio','none')
-		.attr('xmlns:xlink','http://www.w3.org/1999/xlink')
-	  	.attr("xlink:href", 'http://placekitten.com/g/48/48');
+	// defs.append("pattern")
+	// 	.attr('id','snow')
+	// 	.attr('height',"100%")
+	// 	.attr('width', "100%")
+	// 	.attr('patternContentUnits','objectBoundingBox')
+	// 	.append("image")
+	// 	.attr('height',1)
+	// 	.attr('width',1)
+	// 	.attr('preserveAspectRatio','none')
+	// 	.attr('xmlns:xlink','http://www.w3.org/1999/xlink')
+	//   	.attr("xlink:href", 'http://placekitten.com/g/48/48');
 
 	defs.selectAll('.circles-pattern')
 		.data(nodes)
@@ -239,11 +240,11 @@ function bubbleChart() {
 	  	});
 
 	bubbles = svg.selectAll('.bubble')
-	  .data(nodes, function (d) { return d.name; })
+	  .data(nodes, function (d) { return d.id; })
 	  
 
 	bubbles.enter()
-	.append('circle')
+	  .append('circle')
 	  .classed('bubble', true)
 	  .attr('r', 0)
 	  .attr('stroke-width', 2)
@@ -312,14 +313,26 @@ function bubbleChart() {
 	d3.select(this).attr('stroke', 'black')
 
 	var content = '<div class="content">';
-	content += '<div class="row"><div class="col-md-12"><span class="name">'+d.name+', </span>';
-	content += '<span class="educationLevel">'+d.educationLevel+'</span></div></div>';
-	content += '<div class="row"><div class="col-md-12"><span class="school">'+d.school+'</span></div></div>';
+	if(d.name){
+		content += '<div class="row"><div class="col-md-12"><span class="name">'+d.name+', </span>';
+	}
+	if(d.educationLevel){
+		content += '<span class="educationLevel">'+d.educationLevel+'</span></div></div>';
+	}
+	if(d.school){
+		content += '<div class="row"><div class="col-md-12"><span class="school">'+d.school+'</span></div></div>';
+	}
 	content += '<div class="row">';
-	content += '<div class="col-md-12"><span class="major text-left">'+d.major+', </span>';
-	content += '<span class="graduationYear text-right">'+d.graduationYear+'</span></div></div>';
+	if(d.major){
+		content += '<div class="col-md-12"><span class="major text-left">'+d.major+', </span>';
+	}
+	if(d.graduationYear){
+		content += '<span class="graduationYear text-right">'+d.graduationYear+'</span></div></div>';
+	}
 	content += '<div class="row">';
-	content += '<span class="numOfHackathons">'+d.hackathons+" Hackathons"+'</span></div>';
+	if(d.hackathons){
+		content += '<span class="numOfHackathons">'+d.hackathons+" Hackathons"+'</span></div>';
+	}
 	content += '</div>';
 
 	tooltip.showTooltip(content, d3.event);
