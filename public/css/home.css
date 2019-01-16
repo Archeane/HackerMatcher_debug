@@ -15,6 +15,7 @@ hr
     margin-top: -2.5em;  
     border: 2px solid black; 
     transition: 0.2s;
+    border-radius: 15%;
 }
 #menu:hover 
 { 
